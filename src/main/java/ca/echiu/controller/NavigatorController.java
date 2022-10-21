@@ -4,6 +4,7 @@ import ca.echiu.service.FileSystemService;
 import ca.echiu.wrapper.FileWrapper;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,6 +34,12 @@ public class NavigatorController {
             listViewOfFiles.getItems().add(new FileWrapper(file));
         }
     }
+
+    public void navigatorListClicked(MouseEvent mouseEvent){
+        System.out.println(listViewOfFiles.getSelectionModel().getSelectedItem());
+
+    }
+
 
 
 }

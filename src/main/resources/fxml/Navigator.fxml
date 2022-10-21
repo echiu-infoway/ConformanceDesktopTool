@@ -12,7 +12,7 @@
     <VBox>
         <children>
             <Label text="Navigator"/>
-            <ListView fx:id="listViewOfFiles"/>
+            <ListView fx:id="listViewOfFiles" onMouseClicked="#navigatorListClicked"/>
         </children>
     </VBox>
 
