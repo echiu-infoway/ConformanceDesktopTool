@@ -20,7 +20,7 @@ public class MainWindowController {
     private FileSystemService fileSystemService;
 
 
-    public void loadWeatherForecast(ActionEvent actionEvent){
+    public void loadWeatherForecast(ActionEvent actionEvent) {
         weatherLabel.setText(weatherService.getWeatherForecast());
     }
 }

@@ -11,7 +11,7 @@ import java.io.File;
 
 @Component
 @FxmlView("/fxml/Navigator.fxml")
-public class NavigatorController{
+public class NavigatorController {
 
     @FXML
     private ListView listViewOfFiles;
@@ -20,7 +20,7 @@ public class NavigatorController{
 
     private String file;
 
-    public NavigatorController(FileSystemService fileSystemService){
+    public NavigatorController(FileSystemService fileSystemService) {
         this.fileSystemService = fileSystemService;
         this.listViewOfFiles = new ListView();
     }
