@@ -20,6 +20,7 @@
         <children>
             <Label fx:id="weatherLabel" text="Awaiting weather..."/>
             <Button onAction="#loadWeatherForecast">Get weather!</Button>
+            <fx:include source="MediaPlayer.fxml"/>
         </children>
     </VBox>
     <padding>
