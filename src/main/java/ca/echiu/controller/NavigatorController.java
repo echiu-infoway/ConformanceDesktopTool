@@ -1,6 +1,7 @@
 package ca.echiu.controller;
 
 import ca.echiu.service.FileSystemService;
+import ca.echiu.wrapper.FileWrapper;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import net.rgielen.fxweaver.core.FxmlView;
@@ -14,7 +15,7 @@ import java.io.File;
 public class NavigatorController {
 
     @FXML
-    private ListView listViewOfFiles;
+    private ListView<FileWrapper> listViewOfFiles;
     @Autowired
     private FileSystemService fileSystemService;
 
@@ -29,7 +30,7 @@ public class NavigatorController {
     public void initialize() {
         File[] files = fileSystemService.getListOfFiles();
         for (File file : files) {
-            listViewOfFiles.getItems().add(file);
+            listViewOfFiles.getItems().add(new FileWrapper(file));
         }
     }
 
