@@ -7,6 +7,8 @@ import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+
 @Component
 @FxmlView("/fxml/Navigator.fxml")
 public class NavigatorController{
@@ -24,9 +26,11 @@ public class NavigatorController{
     }
 
     @FXML
-    public void initialize(){
-        String file = fileSystemService.getFile();
-        listViewOfFiles.getItems().add(file);
+    public void initialize() {
+        File[] files = fileSystemService.getListOfFiles();
+        for (File file : files) {
+            listViewOfFiles.getItems().add(file);
+        }
     }
 
 
