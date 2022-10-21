@@ -1,5 +1,6 @@
 package ca.echiu.controller;
 
+import ca.echiu.service.FileSystemService;
 import ca.echiu.service.WeatherService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,11 +14,11 @@ import org.springframework.stereotype.Component;
 public class MainWindowController {
     @FXML
     private Label weatherLabel;
+    @Autowired
     private WeatherService weatherService;
     @Autowired
-    public MainWindowController(WeatherService weatherService){
-        this.weatherService = weatherService;
-    }
+    private FileSystemService fileSystemService;
+
 
     public void loadWeatherForecast(ActionEvent actionEvent){
         weatherLabel.setText(weatherService.getWeatherForecast());

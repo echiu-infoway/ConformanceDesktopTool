@@ -9,7 +9,7 @@
 <?import javafx.geometry.Insets?>
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
-          fx:controller="ca.echiu.controller.MainWindowController" prefHeight="200" prefWidth="200">
+          fx:controller="ca.echiu.controller.MainWindowController">
 
     <HBox GridPane.columnIndex="0">
         <children>

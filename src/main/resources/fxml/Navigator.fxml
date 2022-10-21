@@ -9,8 +9,12 @@
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="ca.echiu.controller.NavigatorController">
+    <VBox>
+        <children>
+            <Label text="Navigator"/>
+            <ListView fx:id="listViewOfFiles"/>
+        </children>
+    </VBox>
 
-    <Label text="Navigator"/>
-    <ListView fx:id="listViewListOfFiles"/>
 
 </AnchorPane>
