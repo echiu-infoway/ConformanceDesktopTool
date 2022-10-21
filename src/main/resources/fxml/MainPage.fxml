@@ -6,16 +6,25 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="ca.echiu.controller.MainWindowController"
-            prefHeight="400.0" prefWidth="600.0">
-    <VBox>
+<?import javafx.geometry.Insets?>
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="ca.echiu.controller.MainWindowController" prefHeight="200" prefWidth="200">
+
+    <HBox GridPane.columnIndex="0">
         <children>
-            <Label fx:id="weatherLabel"/>
+            <fx:include source="Navigator.fxml"/>
+        </children>
+    </HBox>
+    <VBox GridPane.columnIndex="1">
+        <children>
+            <Label fx:id="weatherLabel" text="Awaiting weather..."/>
             <Button onAction="#loadWeatherForecast">Get weather!</Button>
         </children>
     </VBox>
+    <padding>
+        <Insets bottom="5" left ="5" right="5" top="5"/>
+    </padding>
 
 
-</AnchorPane>
+</GridPane>
