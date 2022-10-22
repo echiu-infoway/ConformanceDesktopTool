@@ -1,6 +1,7 @@
 package ca.echiu.controller;
 
 import ca.echiu.event.PlayMediaEvent;
+import ca.echiu.event.SaveNewFileEvent;
 import ca.echiu.service.FileSystemService;
 import ca.echiu.wrapper.FileWrapper;
 import javafx.fxml.FXML;
@@ -8,11 +9,16 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import net.rgielen.fxweaver.core.FxmlView;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import javax.swing.*;
 import java.io.File;
+import java.io.IOException;
+import java.util.regex.Pattern;
 
 @Component
 @FxmlView("/fxml/Navigator.fxml")
@@ -31,6 +37,15 @@ public class NavigatorController {
         this.fileSystemService = fileSystemService;
         this.publisher = publisher;
         this.listViewOfFiles = new ListView();
+    }
+
+    @EventListener
+    public void writeNewFile(SaveNewFileEvent saveNewFileEvent) throws IOException {
+
+        File sourceFile = listViewOfFiles.getSelectionModel().getSelectedItem().getFile();
+        File destFile = new File("C:\\Users\\email\\Downloads\\NewFolder\\" + saveNewFileEvent.getNewFileName() + "." + FilenameUtils.getExtension(sourceFile.getName()));
+        fileSystemService.saveNewFile(sourceFile, destFile);
+
     }
 
     @FXML
