@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 @Service
@@ -16,9 +18,9 @@ public class FileSystemService {
         return "You got a file!";
     }
 
-    public File[] getListOfFiles() {
+    public File[] getListOfFiles(Path directoryPath) {
 
-        File directory = new File("C:\\Users\\email\\Downloads");
+        File directory = new File(directoryPath.toUri());
         listOfFiles = directory.listFiles(new FilenameFilter() {
             public boolean accept(File dirFiles, String filename) {
                 boolean endsWith = filename.toLowerCase().endsWith(".mp4");
