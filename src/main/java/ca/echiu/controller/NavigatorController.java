@@ -45,8 +45,7 @@ public class NavigatorController {
         if(mouseEvent.getClickCount()==2) {
             FileWrapper selectedFile = listViewOfFiles.getSelectionModel().getSelectedItem();
             if(selectedFile == null){
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Please select a file");
-                alert.show();
+                new AlertController(Alert.AlertType.ERROR, "Please select a file");
                 return;
             }
             System.out.println(listViewOfFiles.getSelectionModel().getSelectedItem());
