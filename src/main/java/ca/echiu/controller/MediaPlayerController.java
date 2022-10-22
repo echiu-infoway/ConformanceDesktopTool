@@ -17,8 +17,9 @@ import java.net.MalformedURLException;
 public class MediaPlayerController {
     @FXML
     private MediaView mediaView;
+    private static MediaPlayer mediaPlayer;
 
-    public MediaPlayerController(){
+    public MediaPlayerController() {
         this.mediaView = new MediaView();
     }
 
@@ -27,10 +28,9 @@ public class MediaPlayerController {
 
         File videoFile = playMediaEvent.getFile();
         Media media = new Media(videoFile.toURI().toURL().toString());
-        System.out.println("Video to play:" + media);
-        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setOnReady(() -> mediaView.setMediaPlayer(mediaPlayer));
         mediaPlayer.setAutoPlay(true);
-        mediaView.setMediaPlayer(mediaPlayer);
     }
 
 
