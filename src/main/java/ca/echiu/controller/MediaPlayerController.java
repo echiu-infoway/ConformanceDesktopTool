@@ -33,7 +33,7 @@ public class MediaPlayerController {
 
     @EventListener
     public void playVideo(PlayMediaEvent playMediaEvent) throws MalformedURLException {
-
+        mediaView.setMediaPlayer(null);
         File videoFile = playMediaEvent.getFile();
         Media media = new Media(videoFile.toURI().toURL().toString());
         mediaPlayer = new MediaPlayer(media);
