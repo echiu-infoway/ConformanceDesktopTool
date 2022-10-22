@@ -11,7 +11,13 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="ca.echiu.controller.MediaPlayerController">
     <children>
-        <MediaView fx:id="mediaView" preserveRatio="true" />
+        <VBox>
+            <children>
+                <MediaView fx:id="mediaView" preserveRatio="true" />
+                <fx:include source="MediaControls.fxml"/>
+            </children>
+        </VBox>
+
     </children>
 
 </Pane>
