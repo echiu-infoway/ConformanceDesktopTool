@@ -10,11 +10,17 @@
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="ca.echiu.controller.FileOrganizerController">
-    <VBox fillWidth="true" AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.bottomAnchor="0">
+    <VBox AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.bottomAnchor="0">
         <children>
             <Label text="File Organizer"/>
-            <Text id="title" text="Name of Scenario"/>
-            <TextField/>
+            <Text  id="title" text="Name of Scenario"/>
+            <HBox >
+                <children>
+                    <TextField HBox.hgrow="ALWAYS" fx:id="fileName"/>
+                    <Button onAction="#copyFileToNewName" text="SAVE"/>
+                </children>
+            </HBox>
+
         </children>
     </VBox>
 

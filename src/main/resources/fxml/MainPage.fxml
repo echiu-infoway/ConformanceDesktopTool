@@ -18,7 +18,7 @@
         <RowConstraints vgrow="SOMETIMES"/>
     </rowConstraints>
 
-    <VBox spacing="5" GridPane.columnIndex="0" fillWidth="true">
+    <VBox prefWidth="350" spacing="5" GridPane.columnIndex="0" fillWidth="true">
         <children>
             <fx:include source="Navigator.fxml"/>
             <fx:include source="FileOrganizer.fxml"/>
