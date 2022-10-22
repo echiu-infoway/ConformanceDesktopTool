@@ -10,13 +10,20 @@
 <GridPane hgap="10" fx:id="mainGridPane" xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="ca.echiu.controller.MainWindowController">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES"/>
+        <ColumnConstraints hgrow="ALWAYS"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints vgrow="SOMETIMES"/>
+    </rowConstraints>
 
     <HBox GridPane.columnIndex="0">
         <children>
             <fx:include source="Navigator.fxml"/>
         </children>
     </HBox>
-    <VBox GridPane.columnIndex="1">
+    <VBox GridPane.columnIndex="1" fillWidth="true">
         <children>
             <Label fx:id="weatherLabel" text="Awaiting weather..."/>
             <Button onAction="#loadWeatherForecast">Get weather!</Button>
