@@ -24,6 +24,7 @@ public class ConformanceDesktopTool extends Application {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle(CONFORMANCE_DESKTOP_TOOL);
+        stage.setMaximized(true);
         stage.show();
 
 
