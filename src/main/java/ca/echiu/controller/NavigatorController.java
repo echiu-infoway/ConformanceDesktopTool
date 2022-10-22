@@ -43,6 +43,9 @@ public class NavigatorController {
     public void navigatorListClicked(MouseEvent mouseEvent){
         if(mouseEvent.getClickCount()==2) {
             FileWrapper selectedFile = listViewOfFiles.getSelectionModel().getSelectedItem();
+            if(selectedFile.equals(null)){
+                return;
+            }
             System.out.println(listViewOfFiles.getSelectionModel().getSelectedItem());
             publisher.publishEvent(new PlayMediaEvent(selectedFile.getFile()));
         }
