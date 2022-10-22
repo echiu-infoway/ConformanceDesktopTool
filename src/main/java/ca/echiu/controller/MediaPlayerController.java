@@ -2,6 +2,7 @@ package ca.echiu.controller;
 
 import ca.echiu.event.PlayMediaEvent;
 import javafx.fxml.FXML;
+import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -17,10 +18,17 @@ import java.net.MalformedURLException;
 public class MediaPlayerController {
     @FXML
     private MediaView mediaView;
+    @FXML
+    private Pane mediaPane;
     private static MediaPlayer mediaPlayer;
 
     public MediaPlayerController() {
         this.mediaView = new MediaView();
+    }
+
+    @FXML
+    public void initialize(){
+
     }
 
     @EventListener
@@ -31,6 +39,7 @@ public class MediaPlayerController {
         mediaPlayer = new MediaPlayer(media);
         mediaPlayer.setOnReady(() -> mediaView.setMediaPlayer(mediaPlayer));
         mediaPlayer.setAutoPlay(true);
+        mediaView.fitWidthProperty().bind(mediaPane.widthProperty());
     }
 
 
