@@ -14,7 +14,7 @@
         <VBox>
             <children>
                 <MediaView fx:id="mediaView" preserveRatio="true" />
-                <fx:include source="MediaControls.fxml"/>
+                <HBox fx:id="mediaButtonsHBox"/>
             </children>
         </VBox>
 
