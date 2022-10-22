@@ -8,12 +8,16 @@
 <?import javafx.scene.media.MediaView?>
 <?import javafx.scene.media.MediaPlayer?>
 <Pane fx:id="mediaPane" xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="ca.echiu.controller.MediaPlayerController">
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="ca.echiu.controller.MediaPlayerController">
     <children>
         <VBox>
             <children>
-                <MediaView fx:id="mediaView" preserveRatio="true" />
+                <VBox spacing="5" style="-fx-border-color: red">
+                    <children>
+                        <MediaView fx:id="mediaView" preserveRatio="true"/>
+                    </children>
+                </VBox>
                 <HBox fx:id="mediaButtonsHBox"/>
             </children>
         </VBox>

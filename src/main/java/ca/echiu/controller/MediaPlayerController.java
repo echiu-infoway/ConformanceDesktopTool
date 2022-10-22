@@ -51,7 +51,7 @@ public class MediaPlayerController {
     }
 
     @FXML
-    public void initialize(){
+    public void initialize() {
 
 
     }
@@ -62,16 +62,14 @@ public class MediaPlayerController {
         File videoFile = playMediaEvent.getFile();
         Media media = new Media(videoFile.toURI().toURL().toString());
         mediaPlayer = new MediaPlayer(media);
-        mediaPlayer.setOnReady(() -> mediaView.setMediaPlayer(mediaPlayer));
-        mediaPlayer.setAutoPlay(true);
-        mediaView.fitWidthProperty().bind(mediaPane.widthProperty());
+        mediaButtonsHBox.getChildren().clear();
         setMediaControls();
         setPlayButtonFunctions();
         setMediaPlayerListener();
 
     }
 
-    private void setMediaControls(){
+    private void setMediaControls() {
         mediaButtonsHBox.setAlignment(Pos.CENTER);
         mediaButtonsHBox.setPadding(new Insets(5, 10, 5, 10));
 
@@ -111,21 +109,19 @@ public class MediaPlayerController {
         mediaButtonsHBox.getChildren().add(volumeSlider);
     }
 
-    private void setPlayButtonFunctions(){
+    private void setPlayButtonFunctions() {
         playButton.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
                 MediaPlayer.Status status = mediaPlayer.getStatus();
 
-                if (status == MediaPlayer.Status.UNKNOWN  || status == MediaPlayer.Status.HALTED)
-                {
+                if (status == MediaPlayer.Status.UNKNOWN || status == MediaPlayer.Status.HALTED) {
                     // don't do anything in these states
                     return;
                 }
 
-                if ( status == MediaPlayer.Status.PAUSED
+                if (status == MediaPlayer.Status.PAUSED
                         || status == MediaPlayer.Status.READY
-                        || status == MediaPlayer.Status.STOPPED)
-                {
+                        || status == MediaPlayer.Status.STOPPED) {
                     // rewind the movie if we're sitting at the end
                     if (atEndOfMedia) {
                         mediaPlayer.seek(mediaPlayer.getStartTime());
@@ -140,9 +136,8 @@ public class MediaPlayerController {
     }
 
 
-    private void setMediaPlayerListener(){
-        mediaPlayer.currentTimeProperty().addListener(new InvalidationListener()
-        {
+    private void setMediaPlayerListener() {
+        mediaPlayer.currentTimeProperty().addListener(new InvalidationListener() {
             public void invalidated(Observable ov) {
                 updateValues();
             }
@@ -168,6 +163,9 @@ public class MediaPlayerController {
 
         mediaPlayer.setOnReady(new Runnable() {
             public void run() {
+                mediaView.setMediaPlayer(mediaPlayer);
+                mediaPlayer.setAutoPlay(true);
+                mediaView.fitWidthProperty().bind(mediaPane.widthProperty());
                 duration = mediaPlayer.getMedia().getDuration();
                 updateValues();
             }
@@ -185,7 +183,7 @@ public class MediaPlayerController {
         });
     }
 
-    private void setTimeSliderListener(){
+    private void setTimeSliderListener() {
         timeSlider.valueProperty().addListener(new InvalidationListener() {
             public void invalidated(Observable ov) {
                 if (timeSlider.isValueChanging()) {
@@ -197,7 +195,7 @@ public class MediaPlayerController {
 
     }
 
-    private void setVolumeControlListener(){
+    private void setVolumeControlListener() {
         volumeSlider.valueProperty().addListener(new InvalidationListener() {
             public void invalidated(Observable ov) {
                 if (volumeSlider.isValueChanging()) {
@@ -207,6 +205,7 @@ public class MediaPlayerController {
         });
 
     }
+
     protected void updateValues() {
         if (playTime != null && timeSlider != null && volumeSlider != null) {
             Platform.runLater(new Runnable() {
@@ -221,7 +220,7 @@ public class MediaPlayerController {
                                 * 100.0);
                     }
                     if (!volumeSlider.isValueChanging()) {
-                        volumeSlider.setValue((int)Math.round(mediaPlayer.getVolume()
+                        volumeSlider.setValue((int) Math.round(mediaPlayer.getVolume()
                                 * 100));
                     }
                 }
@@ -230,7 +229,7 @@ public class MediaPlayerController {
     }
 
     private static String formatTime(Duration elapsed, Duration duration) {
-        int intElapsed = (int)Math.floor(elapsed.toSeconds());
+        int intElapsed = (int) Math.floor(elapsed.toSeconds());
         int elapsedHours = intElapsed / (60 * 60);
         if (elapsedHours > 0) {
             intElapsed -= elapsedHours * 60 * 60;
@@ -240,7 +239,7 @@ public class MediaPlayerController {
                 - elapsedMinutes * 60;
 
         if (duration.greaterThan(Duration.ZERO)) {
-            int intDuration = (int)Math.floor(duration.toSeconds());
+            int intDuration = (int) Math.floor(duration.toSeconds());
             int durationHours = intDuration / (60 * 60);
             if (durationHours > 0) {
                 intDuration -= durationHours * 60 * 60;
@@ -254,7 +253,7 @@ public class MediaPlayerController {
                         durationHours, durationMinutes, durationSeconds);
             } else {
                 return String.format("%02d:%02d/%02d:%02d",
-                        elapsedMinutes, elapsedSeconds,durationMinutes,
+                        elapsedMinutes, elapsedSeconds, durationMinutes,
                         durationSeconds);
             }
         } else {
@@ -262,12 +261,11 @@ public class MediaPlayerController {
                 return String.format("%d:%02d:%02d", elapsedHours,
                         elapsedMinutes, elapsedSeconds);
             } else {
-                return String.format("%02d:%02d",elapsedMinutes,
+                return String.format("%02d:%02d", elapsedMinutes,
                         elapsedSeconds);
             }
         }
     }
-
 
 
 }
