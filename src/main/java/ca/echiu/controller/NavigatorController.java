@@ -4,6 +4,7 @@ import ca.echiu.event.PlayMediaEvent;
 import ca.echiu.service.FileSystemService;
 import ca.echiu.wrapper.FileWrapper;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import net.rgielen.fxweaver.core.FxmlView;
@@ -43,7 +44,9 @@ public class NavigatorController {
     public void navigatorListClicked(MouseEvent mouseEvent){
         if(mouseEvent.getClickCount()==2) {
             FileWrapper selectedFile = listViewOfFiles.getSelectionModel().getSelectedItem();
-            if(selectedFile.equals(null)){
+            if(selectedFile == null){
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Please select a file");
+                alert.show();
                 return;
             }
             System.out.println(listViewOfFiles.getSelectionModel().getSelectedItem());
