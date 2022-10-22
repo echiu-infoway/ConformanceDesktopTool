@@ -1,6 +1,9 @@
 package ca.echiu.controller;
 
 import ca.echiu.event.PlayMediaEvent;
+import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -49,9 +52,29 @@ public class MediaPlayerController {
 
     @FXML
     public void initialize(){
+
+
+    }
+
+    @EventListener
+    public void playVideo(PlayMediaEvent playMediaEvent) throws MalformedURLException {
+        mediaView.setMediaPlayer(null);
+        File videoFile = playMediaEvent.getFile();
+        Media media = new Media(videoFile.toURI().toURL().toString());
+        mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setOnReady(() -> mediaView.setMediaPlayer(mediaPlayer));
+        mediaPlayer.setAutoPlay(true);
+        mediaView.fitWidthProperty().bind(mediaPane.widthProperty());
+        setMediaControls();
+        setPlayButtonFunctions();
+        setMediaPlayerListener();
+
+    }
+
+    private void setMediaControls(){
         mediaButtonsHBox.setAlignment(Pos.CENTER);
         mediaButtonsHBox.setPadding(new Insets(5, 10, 5, 10));
-        setPlayButtonFunctions();
+
         mediaButtonsHBox.getChildren().add(playButton);
         // Add spacer
         Label spacer = new Label("   ");
@@ -66,6 +89,7 @@ public class MediaPlayerController {
         HBox.setHgrow(timeSlider, Priority.ALWAYS);
         timeSlider.setMinWidth(50);
         timeSlider.setMaxWidth(Double.MAX_VALUE);
+        setTimeSliderListener();
         mediaButtonsHBox.getChildren().add(timeSlider);
 
 // Add Play label
@@ -83,22 +107,11 @@ public class MediaPlayerController {
         volumeSlider.setPrefWidth(70);
         volumeSlider.setMaxWidth(Region.USE_PREF_SIZE);
         volumeSlider.setMinWidth(30);
-
+        setVolumeControlListener();
         mediaButtonsHBox.getChildren().add(volumeSlider);
     }
 
-    @EventListener
-    public void playVideo(PlayMediaEvent playMediaEvent) throws MalformedURLException {
-        mediaView.setMediaPlayer(null);
-        File videoFile = playMediaEvent.getFile();
-        Media media = new Media(videoFile.toURI().toURL().toString());
-        mediaPlayer = new MediaPlayer(media);
-        mediaPlayer.setOnReady(() -> mediaView.setMediaPlayer(mediaPlayer));
-        mediaPlayer.setAutoPlay(true);
-        mediaView.fitWidthProperty().bind(mediaPane.widthProperty());
-    }
-
-    public void setPlayButtonFunctions(){
+    private void setPlayButtonFunctions(){
         playButton.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
                 MediaPlayer.Status status = mediaPlayer.getStatus();
@@ -125,6 +138,136 @@ public class MediaPlayerController {
             }
         });
     }
+
+
+    private void setMediaPlayerListener(){
+        mediaPlayer.currentTimeProperty().addListener(new InvalidationListener()
+        {
+            public void invalidated(Observable ov) {
+                updateValues();
+            }
+        });
+
+        mediaPlayer.setOnPlaying(new Runnable() {
+            public void run() {
+                if (stopRequested) {
+                    mediaPlayer.pause();
+                    stopRequested = false;
+                } else {
+                    playButton.setText("||");
+                }
+            }
+        });
+
+        mediaPlayer.setOnPaused(new Runnable() {
+            public void run() {
+                System.out.println("onPaused");
+                playButton.setText(">");
+            }
+        });
+
+        mediaPlayer.setOnReady(new Runnable() {
+            public void run() {
+                duration = mediaPlayer.getMedia().getDuration();
+                updateValues();
+            }
+        });
+
+        mediaPlayer.setCycleCount(repeat ? MediaPlayer.INDEFINITE : 1);
+        mediaPlayer.setOnEndOfMedia(new Runnable() {
+            public void run() {
+                if (!repeat) {
+                    playButton.setText(">");
+                    stopRequested = true;
+                    atEndOfMedia = true;
+                }
+            }
+        });
+    }
+
+    private void setTimeSliderListener(){
+        timeSlider.valueProperty().addListener(new InvalidationListener() {
+            public void invalidated(Observable ov) {
+                if (timeSlider.isValueChanging()) {
+                    // multiply duration by percentage calculated by slider position
+                    mediaPlayer.seek(duration.multiply(timeSlider.getValue() / 100.0));
+                }
+            }
+        });
+
+    }
+
+    private void setVolumeControlListener(){
+        volumeSlider.valueProperty().addListener(new InvalidationListener() {
+            public void invalidated(Observable ov) {
+                if (volumeSlider.isValueChanging()) {
+                    mediaPlayer.setVolume(volumeSlider.getValue() / 100.0);
+                }
+            }
+        });
+
+    }
+    protected void updateValues() {
+        if (playTime != null && timeSlider != null && volumeSlider != null) {
+            Platform.runLater(new Runnable() {
+                public void run() {
+                    Duration currentTime = mediaPlayer.getCurrentTime();
+                    playTime.setText(formatTime(currentTime, duration));
+                    timeSlider.setDisable(duration.isUnknown());
+                    if (!timeSlider.isDisabled()
+                            && duration.greaterThan(Duration.ZERO)
+                            && !timeSlider.isValueChanging()) {
+                        timeSlider.setValue(currentTime.divide(duration).toMillis()
+                                * 100.0);
+                    }
+                    if (!volumeSlider.isValueChanging()) {
+                        volumeSlider.setValue((int)Math.round(mediaPlayer.getVolume()
+                                * 100));
+                    }
+                }
+            });
+        }
+    }
+
+    private static String formatTime(Duration elapsed, Duration duration) {
+        int intElapsed = (int)Math.floor(elapsed.toSeconds());
+        int elapsedHours = intElapsed / (60 * 60);
+        if (elapsedHours > 0) {
+            intElapsed -= elapsedHours * 60 * 60;
+        }
+        int elapsedMinutes = intElapsed / 60;
+        int elapsedSeconds = intElapsed - elapsedHours * 60 * 60
+                - elapsedMinutes * 60;
+
+        if (duration.greaterThan(Duration.ZERO)) {
+            int intDuration = (int)Math.floor(duration.toSeconds());
+            int durationHours = intDuration / (60 * 60);
+            if (durationHours > 0) {
+                intDuration -= durationHours * 60 * 60;
+            }
+            int durationMinutes = intDuration / 60;
+            int durationSeconds = intDuration - durationHours * 60 * 60 -
+                    durationMinutes * 60;
+            if (durationHours > 0) {
+                return String.format("%d:%02d:%02d/%d:%02d:%02d",
+                        elapsedHours, elapsedMinutes, elapsedSeconds,
+                        durationHours, durationMinutes, durationSeconds);
+            } else {
+                return String.format("%02d:%02d/%02d:%02d",
+                        elapsedMinutes, elapsedSeconds,durationMinutes,
+                        durationSeconds);
+            }
+        } else {
+            if (elapsedHours > 0) {
+                return String.format("%d:%02d:%02d", elapsedHours,
+                        elapsedMinutes, elapsedSeconds);
+            } else {
+                return String.format("%02d:%02d",elapsedMinutes,
+                        elapsedSeconds);
+            }
+        }
+    }
+
 
 
 }
