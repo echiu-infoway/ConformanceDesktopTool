@@ -27,7 +27,12 @@
     <VBox GridPane.columnIndex="1" fillWidth="true">
         <children>
             <Label fx:id="weatherLabel" text="Awaiting weather..."/>
-            <Button onAction="#loadWeatherForecast">Get weather!</Button>
+            <HBox spacing="5">
+                <children>
+                    <Button onAction="#loadWeatherForecast">Get weather!</Button>
+                    <ToggleButton>REVIEW MODE</ToggleButton>
+                </children>
+            </HBox>
             <fx:include source="MediaPlayer.fxml"/>
         </children>
     </VBox>
