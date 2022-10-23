@@ -1,6 +1,7 @@
 package ca.echiu.controller;
 
 import ca.echiu.event.PlayMediaEvent;
+import ca.echiu.event.RefreshFileListEvent;
 import ca.echiu.event.SaveNewFileEvent;
 import ca.echiu.service.FileSystemService;
 import ca.echiu.wrapper.FileWrapper;
@@ -8,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
@@ -27,7 +29,7 @@ import java.util.regex.Pattern;
 
 @Component
 @FxmlView("/fxml/Navigator.fxml")
-public class NavigatorController {
+public class NavigatorController implements FileSystemController {
 
     @FXML
     private ListView<FileWrapper> listViewOfFiles;
@@ -41,10 +43,9 @@ public class NavigatorController {
     private Text statusText;
 
     private final ApplicationEventPublisher publisher;
-
     private String file;
-    private final String NO_APPLICABLE_FILES_FOUND = "No applicable files found";
-    private final String TOTAL_NUMBER_OF_FILES = "TOTAL NUMBER OF FILES: ";
+    private final String PLEASE_SELECT_A_FILE = "Please select a file";
+
 
     private Path directoryPath;
 
@@ -54,11 +55,13 @@ public class NavigatorController {
         this.listViewOfFiles = new ListView();
     }
 
+    @Override
     public void chooseDirectory(){
         DirectoryChooser directoryChooser = new DirectoryChooser();
         File selectedDirectory = directoryChooser.showDialog(navigatorPane.getScene().getWindow());
         directoryPath = selectedDirectory.toPath();
         directoryPathText.setText(directoryPath.toString());
+        listViewOfFiles.getItems().clear();
         File[] files = fileSystemService.getListOfFiles(directoryPath);
         if (files.length == 0){statusText.setText(NO_APPLICABLE_FILES_FOUND);}
         for (File file : files) {
@@ -70,10 +73,14 @@ public class NavigatorController {
 
     @EventListener
     public void writeNewFile(SaveNewFileEvent saveNewFileEvent) throws IOException {
+        if(listViewOfFiles.getSelectionModel().isEmpty()){
+            new AlertController(Alert.AlertType.WARNING, PLEASE_SELECT_A_FILE);
+        }
 
         File sourceFile = listViewOfFiles.getSelectionModel().getSelectedItem().getFile();
         File destFile = new File("C:\\Users\\email\\Downloads\\NewFolder\\" + saveNewFileEvent.getNewFileName() + "." + FilenameUtils.getExtension(sourceFile.getName()));
         fileSystemService.saveNewFile(sourceFile, destFile);
+        publisher.publishEvent(new RefreshFileListEvent());
 
     }
 
@@ -81,6 +88,7 @@ public class NavigatorController {
     public void initialize() {
         statusText.setText(NO_APPLICABLE_FILES_FOUND);
     }
+
 
     public void navigatorListClicked(MouseEvent mouseEvent){
         if(mouseEvent.getClickCount()==2) {

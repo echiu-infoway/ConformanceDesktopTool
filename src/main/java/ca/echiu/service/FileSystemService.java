@@ -1,13 +1,14 @@
 package ca.echiu.service;
 
+import ca.echiu.controller.AlertController;
+import javafx.scene.control.Alert;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.*;
 import java.util.List;
 
 @Service
@@ -32,6 +33,14 @@ public class FileSystemService {
     }
 
     public void saveNewFile(File source, File destination) throws IOException {
-        Files.copy(source.toPath(), destination.toPath());
+        try {
+            Files.copy(source.toPath(), destination.toPath());
+        }
+        catch (FileAlreadyExistsException fileAlreadyExistsException){
+            new AlertController (Alert.AlertType.ERROR, fileAlreadyExistsException.getMessage()+" already exists");
+        }
+        catch (IOException e){
+            new AlertController(Alert.AlertType.ERROR, e.getMessage()+" could not be saved");
+        }
     }
 }

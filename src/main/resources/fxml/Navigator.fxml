@@ -12,10 +12,10 @@
             fx:controller="ca.echiu.controller.NavigatorController">
     <VBox AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.bottomAnchor="0">
         <children>
+            <Label text="Navigator"/>
             <Button onAction="#chooseDirectory" text="Select Directory..."/>
             <Text fx:id="directoryPathText"/>
             <Text fx:id="statusText"/>
-            <Label text="Navigator"/>
             <ListView fx:id="listViewOfFiles" onMouseClicked="#navigatorListClicked"/>
         </children>
     </VBox>

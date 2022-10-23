@@ -7,12 +7,15 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.text.Text?>
-<AnchorPane xmlns="http://javafx.com/javafx"
+<AnchorPane fx:id="fileOrganizerPane" xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="ca.echiu.controller.FileOrganizerController">
-    <VBox AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.bottomAnchor="0">
+    <VBox spacing="5" AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.bottomAnchor="0">
         <children>
             <Label text="File Organizer"/>
+            <Button onAction="#chooseDirectory" text="Select Directory..."/>
+            <Text fx:id="directoryPathText"/>
+            <Text fx:id="statusText"/>
             <Text  id="title" text="Name of Scenario"/>
             <HBox >
                 <children>
@@ -20,7 +23,7 @@
                     <Button onAction="#copyFileToNewName" text="SAVE"/>
                 </children>
             </HBox>
-
+            <ListView fx:id="listViewOfFiles"/>
         </children>
     </VBox>
 
