@@ -16,7 +16,6 @@
             <Button onAction="#chooseDirectory" text="Select Directory..."/>
             <ComboBox fx:id="scenarioListComboBox"  promptText="Select scenario"/>
             <Text fx:id="directoryPathText"/>
-            <Text fx:id="statusText"/>
             <TableView fx:id="reviewTableView"/>
         </children>
     </VBox>

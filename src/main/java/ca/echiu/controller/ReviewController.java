@@ -33,8 +33,6 @@ public class ReviewController implements FileSystemController {
     private AnchorPane reviewPane;
     @FXML
     private ComboBox scenarioListComboBox;
-    @FXML
-    private Text statusText;
 
     @Autowired
     private FileSystemService fileSystemService;
@@ -43,6 +41,8 @@ public class ReviewController implements FileSystemController {
     private Path directoryPath;
     @FXML
     private Text directoryPathText;
+
+    private final String NO_FILES_FOUND = "No files found in folder";
 
     @FXML
     public void initialize() throws FileNotFoundException {
@@ -63,13 +63,13 @@ public class ReviewController implements FileSystemController {
         directoryPath = selectedDirectory.toPath();
         directoryPathText.setText(directoryPath.toString());
         reviewTableView.getItems().clear();
+        scenarioListComboBox.getItems().clear();
         File[] files = fileSystemService.getListOfFiles(directoryPath);
         if (files.length == 0) {
-            statusText.setText(NO_APPLICABLE_FILES_FOUND);
+            new AlertController(Alert.AlertType.WARNING, NO_FILES_FOUND);
         }
         for (File file : files) {
             scenarioListComboBox.getItems().add(new FileWrapper(file));
-            statusText.setText(TOTAL_NUMBER_OF_FILES + files.length);
         }
     }
     public void loadCsvObjectsInTable(String filePath) throws FileNotFoundException {
