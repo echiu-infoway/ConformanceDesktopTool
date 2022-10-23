@@ -7,13 +7,16 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.text.Text?>
-<AnchorPane xmlns="http://javafx.com/javafx"
+<AnchorPane fx:id="reviewPane" xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="ca.echiu.controller.ReviewController">
     <VBox>
         <children>
             <Label text="Review"/>
-            <Text text="Scenario being analyzed"/>
+            <Button onAction="#chooseDirectory" text="Select Directory..."/>
+            <ComboBox fx:id="scenarioListComboBox"  promptText="Select scenario"/>
+            <Text fx:id="directoryPathText"/>
+            <Text fx:id="statusText"/>
             <TableView fx:id="reviewTableView"/>
         </children>
     </VBox>

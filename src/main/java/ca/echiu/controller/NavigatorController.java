@@ -66,7 +66,7 @@ public class NavigatorController implements FileSystemController {
         if (files.length == 0){statusText.setText(NO_APPLICABLE_FILES_FOUND);}
         for (File file : files) {
             listViewOfFiles.getItems().add(new FileWrapper(file));
-            statusText.setText(TOTAL_NUMBER_OF_FILES + String.valueOf(files.length));
+            statusText.setText(TOTAL_NUMBER_OF_FILES + files.length);
             listViewOfFiles.refresh();
         }
     }
@@ -76,7 +76,6 @@ public class NavigatorController implements FileSystemController {
         if(listViewOfFiles.getSelectionModel().isEmpty()){
             new AlertController(Alert.AlertType.WARNING, PLEASE_SELECT_A_FILE);
         }
-
         File sourceFile = listViewOfFiles.getSelectionModel().getSelectedItem().getFile();
         File destFile = new File("C:\\Users\\email\\Downloads\\NewFolder\\" + saveNewFileEvent.getNewFileName() + "." + FilenameUtils.getExtension(sourceFile.getName()));
         fileSystemService.saveNewFile(sourceFile, destFile);
