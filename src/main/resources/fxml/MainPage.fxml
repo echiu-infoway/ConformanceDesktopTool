@@ -20,23 +20,23 @@
 
     <VBox prefWidth="350" spacing="5" GridPane.columnIndex="0" fillWidth="true">
         <children>
-            <fx:include source="Navigator.fxml"/>
-            <StackPane fx:id="bottomLeftStackPane">
-                <children>
+            <StackPane fx:id="topLeftStackPane">
+                <VBox fx:id="navigatorVbox">
+                    <children>
+                        <fx:include source="Navigator.fxml"/>
+                    </children>
+                </VBox>
+                <VBox fx:id="reviewVbox">
+                    <children>
+                        <fx:include source="Review.fxml"/>
+                    </children>
+                </VBox>
+            </StackPane>
                     <VBox fx:id="fileOrganizerVbox">
                         <children>
                             <fx:include source="FileOrganizer.fxml"/>
                         </children>
                     </VBox>
-                    <VBox fx:id="reviewVbox">
-                        <children>
-                            <fx:include source="Review.fxml"/>
-                        </children>
-                    </VBox>
-
-                </children>
-            </StackPane>
-
         </children>
     </VBox>
     <VBox GridPane.columnIndex="1" fillWidth="true">

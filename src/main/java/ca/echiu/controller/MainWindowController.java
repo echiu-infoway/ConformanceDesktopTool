@@ -13,19 +13,20 @@ import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-
 @Component
 @FxmlView("/fxml/MainPage.fxml")
 public class MainWindowController {
+
     @FXML
     private Label weatherLabel;
     @FXML
-    private StackPane bottomLeftStackPane;
+    private StackPane topLeftStackPane;
     @FXML
-    private VBox fileOrganizerVbox;
+    private VBox navigatorVbox;
     @FXML
     private VBox reviewVbox;
+    @FXML
+    private VBox fileOrganizerVbox;
     @FXML
     private ToggleButton reviewToggleButton;
     @Autowired
@@ -46,11 +47,13 @@ public class MainWindowController {
 
     public void toggleFileOrganizerVbox() {
         if (reviewToggleButton.isSelected()) {
+            navigatorVbox.setVisible(false);
             fileOrganizerVbox.setVisible(false);
             reviewVbox.setVisible(true);
         }
         if (!reviewToggleButton.isSelected()) {
             reviewVbox.setVisible(false);
+            navigatorVbox.setVisible(true);
             fileOrganizerVbox.setVisible(true);
 
         }
