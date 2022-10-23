@@ -1,12 +1,12 @@
 package ca.echiu.service;
 
 import ca.echiu.controller.AlertController;
+import ca.echiu.model.ReviewFileModel;
+import com.opencsv.bean.CsvToBeanBuilder;
 import javafx.scene.control.Alert;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.nio.file.*;
 import java.util.List;
@@ -15,9 +15,7 @@ import java.util.List;
 public class FileSystemService {
 
     private File[] listOfFiles;
-    public String getFile() {
-        return "You got a file!";
-    }
+
 
     public File[] getListOfFiles(Path directoryPath) {
 
@@ -35,12 +33,15 @@ public class FileSystemService {
     public void saveNewFile(File source, File destination) throws IOException {
         try {
             Files.copy(source.toPath(), destination.toPath());
+        } catch (FileAlreadyExistsException fileAlreadyExistsException) {
+            new AlertController(Alert.AlertType.ERROR, fileAlreadyExistsException.getMessage() + " already exists");
+        } catch (IOException e) {
+            new AlertController(Alert.AlertType.ERROR, e.getMessage() + " could not be saved");
         }
-        catch (FileAlreadyExistsException fileAlreadyExistsException){
-            new AlertController (Alert.AlertType.ERROR, fileAlreadyExistsException.getMessage()+" already exists");
-        }
-        catch (IOException e){
-            new AlertController(Alert.AlertType.ERROR, e.getMessage()+" could not be saved");
-        }
+    }
+
+    public List<ReviewFileModel> getReviewFile(String file) throws FileNotFoundException {
+        List<ReviewFileModel> reviewFileModelList = new CsvToBeanBuilder<ReviewFileModel>(new FileReader(file)).withType(ReviewFileModel.class).build().parse();
+        return reviewFileModelList;
     }
 }
