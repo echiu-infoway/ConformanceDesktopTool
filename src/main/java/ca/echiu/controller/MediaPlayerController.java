@@ -55,7 +55,7 @@ public class MediaPlayerController {
 
 
     }
-
+//todo: there is a bug where first play a video, then choose another folder and play a video from there, the first video is still playing
     @EventListener
     public void playVideo(PlayMediaEvent playMediaEvent) throws MalformedURLException {
         mediaView.setMediaPlayer(null);
