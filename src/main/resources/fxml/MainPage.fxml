@@ -21,7 +21,12 @@
     <VBox prefWidth="350" spacing="5" GridPane.columnIndex="0" fillWidth="true">
         <children>
             <fx:include source="Navigator.fxml"/>
-            <fx:include source="FileOrganizer.fxml"/>
+            <VBox fx:id="fileOrganizerVBox">
+                <children>
+                    <fx:include source="FileOrganizer.fxml"/>
+                </children>
+            </VBox>
+
         </children>
     </VBox>
     <VBox GridPane.columnIndex="1" fillWidth="true">
@@ -30,7 +35,7 @@
             <HBox spacing="5">
                 <children>
                     <Button onAction="#loadWeatherForecast">Get weather!</Button>
-                    <ToggleButton>REVIEW MODE</ToggleButton>
+                    <ToggleButton fx:id="reviewToggleButton" onAction="#toggleFileOrganizerVbox">REVIEW MODE</ToggleButton>
                 </children>
             </HBox>
             <fx:include source="MediaPlayer.fxml"/>
