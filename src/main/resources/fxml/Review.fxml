@@ -10,8 +10,13 @@
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="ca.echiu.controller.ReviewController">
-    <Label text="Review"/>
-    <Text text="Scenario being analyzed"/>
-    <TableView fx:id="reviewTableView"/>
+    <VBox>
+        <children>
+            <Label text="Review"/>
+            <Text text="Scenario being analyzed"/>
+            <TableView fx:id="reviewTableView"/>
+        </children>
+    </VBox>
+
 
 </AnchorPane>

@@ -1,5 +1,6 @@
 package ca.echiu.controller;
 
+import ca.echiu.model.ReviewFileModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -15,6 +16,10 @@ public class ReviewController {
 
     @FXML
     public void initialize(){
+        TableColumn<ReviewFileModel, String> timestampColumn = new TableColumn<>("Timestamp");
+        TableColumn<ReviewFileModel, String> commentsColumn = new TableColumn<>("Comments");
+        reviewTableView.getColumns().add(timestampColumn);
+        reviewTableView.getColumns().add(commentsColumn);
 
     }
 }
