@@ -6,7 +6,7 @@ import javafx.util.Duration;
 public class ReviewFileModel {
 
     @CsvBindByName(column = "timestamp")
-    private Duration timestamp;
+    private String timestamp;
 
     @CsvBindByName(column = "comments")
     private String comments;
