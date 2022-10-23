@@ -99,6 +99,9 @@ public class NavigatorController implements FileSystemController {
             System.out.println(listViewOfFiles.getSelectionModel().getSelectedItem());
             publisher.publishEvent(new PlayMediaEvent(selectedFile.getFile()));
         }
+        if(listViewOfFiles.getSelectionModel().getSelectedItem() == null){
+            return;
+        }
 
     }
 
