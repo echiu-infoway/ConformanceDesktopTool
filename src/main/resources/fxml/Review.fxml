@@ -6,9 +6,12 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.text.Text?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="ca.echiu.controller.ReviewController">
     <Label text="Review"/>
+    <Text text="Scenario being analyzed"/>
+    <TableView fx:id="reviewTableView"/>
 
 </AnchorPane>
