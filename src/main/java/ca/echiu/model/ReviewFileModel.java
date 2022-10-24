@@ -3,22 +3,24 @@ package ca.echiu.model;
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvBindByPosition;
 import javafx.util.Duration;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NonNull;
+import lombok.*;
 
-@AllArgsConstructor
+
+@NoArgsConstructor
 public class ReviewFileModel {
 
-    @CsvBindByName(column = "timestamp")
+    @CsvBindByName(column = "TIMESTAMP")
     @Getter
-    @NonNull
     private String timestamp;
 
-    @CsvBindByName(column = "comments")
+    @CsvBindByName(column = "COMMENTS")
     @Getter
-    @NonNull
     private String comments;
+
+    public ReviewFileModel(String timestamp, String comments) {
+        this.timestamp = timestamp;
+        this.comments = comments;
+    }
 
     @Override
     public String toString(){

@@ -22,7 +22,7 @@ public class FileSystemService {
 
     private final String MP4 = ".mp4";
     private final String CSV = ".csv";
-    private final String columnNames = "timestamp,comments";
+    private final String columnNames = "TIMESTAMP,COMMENTS";
     private List<ReviewFileModel> reviewFileModelList;
 
 

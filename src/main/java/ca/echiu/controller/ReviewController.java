@@ -86,6 +86,7 @@ public class ReviewController implements FileSystemController {
 
     public void setReviewForScenario() {
         setReviewTextFilePath();
+        System.out.println(reviewTextFile);
         loadCsvObjectsInTable(reviewTextFile);
         eventPublisher.publishEvent(new PlayMediaEvent(scenarioListComboBox.getSelectionModel().getSelectedItem().getFile()));
 
@@ -102,11 +103,11 @@ public class ReviewController implements FileSystemController {
     private void setReviewTextFilePath(){
         videoReviewFile = scenarioListComboBox.getSelectionModel().getSelectedItem().toString();
         reviewTextFile = fileSystemService.getReviewFile(directoryPath, videoReviewFile);
-
     }
 
     public void addReviewComments(ActionEvent actionEvent) {
         try {
+            System.out.println(reviewTextFile);
             reviewFileModelList = fileSystemService.parseReviewFile(reviewTextFile);
             reviewFileModelList.add(new ReviewFileModel("5:33", reviewCommentsTextArea.getText()));
             System.out.println("addReviewComments:"+reviewFileModelList);
