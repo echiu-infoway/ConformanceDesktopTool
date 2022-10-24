@@ -59,6 +59,7 @@ public class NavigatorController implements FileSystemController {
     public void chooseDirectory(){
         DirectoryChooser directoryChooser = new DirectoryChooser();
         File selectedDirectory = directoryChooser.showDialog(navigatorPane.getScene().getWindow());
+        if (selectedDirectory==null){return;}
         directoryPath = selectedDirectory.toPath();
         directoryPathText.setText(directoryPath.toString());
         listViewOfFiles.getItems().clear();

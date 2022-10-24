@@ -7,7 +7,6 @@ import javafx.scene.control.Alert;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.net.URI;
 import java.nio.file.*;
 import java.util.List;
 
@@ -19,6 +18,7 @@ public class FileSystemService {
     private final String MP4 = ".mp4";
     private final String CSV = ".csv";
     private final String columnNames = "timestamp,comments";
+    private List<ReviewFileModel> reviewFileModelList;
 
 
     public File[] getListOfFiles(Path directoryPath) {
@@ -44,19 +44,27 @@ public class FileSystemService {
         }
     }
 
-    public List<ReviewFileModel> getReviewFile(String filePath) throws FileNotFoundException {
+    public List<ReviewFileModel> parseReviewFile(String filePath) throws FileNotFoundException {
         List<ReviewFileModel> reviewFileModelList = new CsvToBeanBuilder<ReviewFileModel>(new FileReader(filePath)).withType(ReviewFileModel.class).build().parse();
         reviewFileModelList.forEach(System.out::println);
         return reviewFileModelList;
     }
 
-    public File findReviewFile(String directory, String fileName) throws IOException {
-        String textFileName = fileName.toLowerCase().replace(MP4, CSV);
-        String reviewFilePath = directory+"\\"+textFileName;
-        FileWriter fileWriter = new FileWriter(reviewFilePath);
-        fileWriter.write(columnNames);
-        fileWriter.close();
-        File file = new File(reviewFilePath);
-        return file;
+    public String getReviewFile(Path directory, String videoFileName){
+        String reviewTextFileName = videoFileName.toString().toLowerCase().replace(MP4, CSV);
+        String directoryString = directory.toString();
+        String reviewFilePathString = directoryString + "\\" + reviewTextFileName;
+        return reviewFilePathString;
+    }
+
+    public void writeNewFile(String filePath) {
+        try {
+            FileWriter fileWriter = new FileWriter(filePath);
+            fileWriter.write(columnNames);
+            fileWriter.close();
+        } catch (IOException ioException){
+            new AlertController(Alert.AlertType.ERROR, ioException.getMessage());
+        }
+
     }
 }
