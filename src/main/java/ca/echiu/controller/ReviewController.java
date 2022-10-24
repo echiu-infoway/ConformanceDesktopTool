@@ -5,10 +5,7 @@ import ca.echiu.model.ReviewFileModel;
 import ca.echiu.service.FileSystemService;
 import ca.echiu.wrapper.FileWrapper;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
@@ -33,6 +30,8 @@ public class ReviewController implements FileSystemController {
     private AnchorPane reviewPane;
     @FXML
     private ComboBox<FileWrapper> scenarioListComboBox;
+    @FXML
+    private TextArea commentsTextsArea;
 
     @Autowired
     private FileSystemService fileSystemService;

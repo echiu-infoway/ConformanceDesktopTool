@@ -10,13 +10,22 @@
 <AnchorPane fx:id="reviewPane" xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="ca.echiu.controller.ReviewController">
-    <VBox>
+    <VBox spacing="5">
         <children>
             <Label text="Review"/>
             <Button onAction="#chooseDirectory" text="Select Directory..."/>
             <ComboBox fx:id="scenarioListComboBox"  promptText="Select scenario" onAction="#setReviewForScenario"/>
             <Text fx:id="directoryPathText"/>
             <TableView fx:id="reviewTableView"/>
+            <Label text="Enter Review Comments"/>
+            <TextArea fx:id="reviewCommentsTextArea"/>
+            <HBox >
+                <children>
+                    <Pane HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="saveCommentsButton" text="ADD"/>
+                </children>
+            </HBox>
+
         </children>
     </VBox>
 
