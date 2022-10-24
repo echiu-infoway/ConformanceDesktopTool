@@ -22,6 +22,8 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Component
 @FxmlView("/fxml/Navigator.fxml")
@@ -73,8 +75,10 @@ public class NavigatorController implements FileSystemController {
         if(listViewOfFiles.getSelectionModel().isEmpty()){
             new AlertController(Alert.AlertType.WARNING, PLEASE_SELECT_A_FILE);
         }
+        LocalDateTime now = LocalDateTime.now();
+        String todayDate = now.format(DateTimeFormatter.ofPattern("MMM dd, yyyy"));
         File sourceFile = listViewOfFiles.getSelectionModel().getSelectedItem().getFile();
-        File destFile = new File("C:\\Users\\email\\Downloads\\NewFolder\\" + saveNewFileEvent.getNewFileName() + "." + FilenameUtils.getExtension(sourceFile.getName()));
+        File destFile = new File(FileOrganizerController.getTargetDirectory()+ "\\" + saveNewFileEvent.getNewFileName() + " - " + todayDate + "." + FilenameUtils.getExtension(sourceFile.getName()));
         fileSystemService.copyToNewFile(sourceFile, destFile);
         publisher.publishEvent(new RefreshFileListEvent());
 

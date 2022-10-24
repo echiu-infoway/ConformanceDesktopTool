@@ -41,7 +41,7 @@ public class FileOrganizerController implements FileSystemController {
     @Autowired
     ApplicationEventPublisher eventPublisher;
 
-    private Path directoryPath;
+    private static Path directoryPath;
 
     public void copyFileToNewName(){
       eventPublisher.publishEvent(new SaveNewFileEvent(fileName.getText()));
@@ -64,11 +64,10 @@ public class FileOrganizerController implements FileSystemController {
 
     }
 
-//    @Override
-//    public void navigatorListClicked(MouseEvent mouseEvent) {
-//
-//        }
+    }
 
+    public static String getTargetDirectory(){
+        return directoryPath.toString();
     }
 
     @EventListener

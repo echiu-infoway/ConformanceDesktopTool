@@ -40,6 +40,7 @@ public class FileSystemService {
     }
 
     public void copyToNewFile(File source, File destination) {
+
         try {
             Files.copy(source.toPath(), destination.toPath());
         } catch (FileAlreadyExistsException fileAlreadyExistsException) {
