@@ -97,6 +97,7 @@ public class ReviewController implements FileSystemController {
     }
 
     public void setReviewForScenario() {
+        reviewTableView.getItems().clear();
         setReviewTextFilePath();
         loadCsvObjectsInTable(reviewTextFile);
         eventPublisher.publishEvent(new PlayMediaEvent(scenarioListComboBox.getSelectionModel().getSelectedItem().getFile()));
