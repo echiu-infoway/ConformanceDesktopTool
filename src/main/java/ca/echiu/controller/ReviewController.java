@@ -1,5 +1,6 @@
 package ca.echiu.controller;
 
+import ca.echiu.event.PlayMediaEvent;
 import ca.echiu.model.ReviewFileModel;
 import ca.echiu.service.FileSystemService;
 import ca.echiu.wrapper.FileWrapper;
@@ -14,6 +15,7 @@ import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -30,10 +32,13 @@ public class ReviewController implements FileSystemController {
     @FXML
     private AnchorPane reviewPane;
     @FXML
-    private ComboBox scenarioListComboBox;
+    private ComboBox<FileWrapper> scenarioListComboBox;
 
     @Autowired
     private FileSystemService fileSystemService;
+    @Autowired
+    ApplicationEventPublisher eventPublisher;
+
     private Path directoryPath;
     @FXML
     private Text directoryPathText;
@@ -79,7 +84,8 @@ public class ReviewController implements FileSystemController {
         videoReviewFile = scenarioListComboBox.getSelectionModel().getSelectedItem().toString();
         String reviewTextFilePath = fileSystemService.getReviewFile(directoryPath, videoReviewFile);
         loadCsvObjectsInTable(reviewTextFilePath);
-
+        System.out.println(scenarioListComboBox.getSelectionModel().getSelectedItem());
+        eventPublisher.publishEvent(new PlayMediaEvent(scenarioListComboBox.getSelectionModel().getSelectedItem().getFile()));
 
     }
 

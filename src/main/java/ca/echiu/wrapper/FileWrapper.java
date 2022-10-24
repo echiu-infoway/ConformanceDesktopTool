@@ -1,9 +1,12 @@
 package ca.echiu.wrapper;
 
+import lombok.Getter;
+
 import java.io.File;
 
 public class FileWrapper {
 
+    @Getter
     private File file;
 
     public FileWrapper(File file) {
