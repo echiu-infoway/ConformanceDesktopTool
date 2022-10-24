@@ -63,6 +63,7 @@ public class ReviewController implements FileSystemController {
     public void chooseDirectory() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         File selectedDirectory = directoryChooser.showDialog(reviewPane.getScene().getWindow());
+        if (selectedDirectory == null) {return;}
         directoryPath = selectedDirectory.toPath();
         directoryPathText.setText(directoryPath.toString());
         reviewTableView.getItems().clear();
