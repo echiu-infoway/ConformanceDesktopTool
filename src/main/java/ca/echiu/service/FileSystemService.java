@@ -16,6 +16,10 @@ public class FileSystemService {
 
     private File[] listOfFiles;
 
+    private final String MP4 = ".mp4";
+    private final String CSV = ".csv";
+    private final String columnNames = "timestamp,comments";
+
 
     public File[] getListOfFiles(Path directoryPath) {
 
@@ -44,5 +48,15 @@ public class FileSystemService {
         List<ReviewFileModel> reviewFileModelList = new CsvToBeanBuilder<ReviewFileModel>(new FileReader(filePath)).withType(ReviewFileModel.class).build().parse();
         reviewFileModelList.forEach(System.out::println);
         return reviewFileModelList;
+    }
+
+    public File findReviewFile(String directory, String fileName) throws IOException {
+        String textFileName = fileName.toLowerCase().replace(MP4, CSV);
+        String reviewFilePath = directory+"\\"+textFileName;
+        FileWriter fileWriter = new FileWriter(reviewFilePath);
+        fileWriter.write(columnNames);
+        fileWriter.close();
+        File file = new File(reviewFilePath);
+        return file;
     }
 }

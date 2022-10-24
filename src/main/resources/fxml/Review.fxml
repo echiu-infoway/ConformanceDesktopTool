@@ -14,7 +14,7 @@
         <children>
             <Label text="Review"/>
             <Button onAction="#chooseDirectory" text="Select Directory..."/>
-            <ComboBox fx:id="scenarioListComboBox"  promptText="Select scenario"/>
+            <ComboBox fx:id="scenarioListComboBox"  promptText="Select scenario" onAction="#setReviewForScenario"/>
             <Text fx:id="directoryPathText"/>
             <TableView fx:id="reviewTableView"/>
         </children>

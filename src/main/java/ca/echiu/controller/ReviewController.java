@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -41,6 +42,8 @@ public class ReviewController implements FileSystemController {
     private Path directoryPath;
     @FXML
     private Text directoryPathText;
+
+    private File reviewFile;
 
     private final String NO_FILES_FOUND = "No files found in folder";
 
@@ -72,13 +75,20 @@ public class ReviewController implements FileSystemController {
             scenarioListComboBox.getItems().add(new FileWrapper(file));
         }
     }
-    public void loadCsvObjectsInTable(String filePath) throws FileNotFoundException {
+
+    public void setReviewForScenario() throws IOException {
+        reviewFile = fileSystemService.findReviewFile(directoryPath.toString(), scenarioListComboBox.getSelectionModel().getSelectedItem().toString());
+        System.out.println(reviewFile.toString());
+
+
+    }
+
+    private void loadCsvObjectsInTable(String filePath) throws FileNotFoundException {
         try {
             reviewFileModelList = fileSystemService.getReviewFile(filePath);
             reviewFileModelList.forEach(e -> reviewTableView.getItems().add(e));
-        }
-        catch (FileNotFoundException fileNotFoundException){
-            new AlertController(Alert.AlertType.ERROR, fileNotFoundException.getMessage()+" could not load file");
+        } catch (FileNotFoundException fileNotFoundException) {
+            new AlertController(Alert.AlertType.ERROR, fileNotFoundException.getMessage() + " could not load file");
         }
     }
 }
