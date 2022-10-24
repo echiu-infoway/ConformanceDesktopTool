@@ -105,7 +105,7 @@ public class ReviewController implements FileSystemController {
         reviewTextFile = fileSystemService.getReviewFile(directoryPath, videoReviewFile);
     }
 
-    public void addReviewComments(ActionEvent actionEvent) {
+    public void saveReviewComments(ActionEvent actionEvent) {
         try {
             System.out.println(reviewTextFile);
             reviewFileModelList = fileSystemService.parseReviewFile(reviewTextFile);
@@ -115,12 +115,8 @@ public class ReviewController implements FileSystemController {
         } catch (FileNotFoundException fileNotFoundException){
             new AlertController(Alert.AlertType.ERROR, fileNotFoundException.getMessage()+" is not found");
 
-        } catch (CsvRequiredFieldEmptyException e) {
-            throw new RuntimeException(e);
-        } catch (CsvDataTypeMismatchException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (CsvRequiredFieldEmptyException | CsvDataTypeMismatchException | IOException e) {
+            new AlertController(Alert.AlertType.ERROR, e.getMessage());
         }
     }
 }
