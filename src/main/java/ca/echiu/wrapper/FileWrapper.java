@@ -18,8 +18,4 @@ public class FileWrapper {
         return file.getName();
 
     }
-
-    public File getFile(){
-        return file;
-    }
 }
