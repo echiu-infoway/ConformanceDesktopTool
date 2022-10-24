@@ -7,9 +7,7 @@ import ca.echiu.service.FileSystemService;
 import ca.echiu.wrapper.FileWrapper;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
-import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
@@ -21,11 +19,9 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.regex.Pattern;
 
 @Component
 @FxmlView("/fxml/Navigator.fxml")
@@ -79,7 +75,7 @@ public class NavigatorController implements FileSystemController {
         }
         File sourceFile = listViewOfFiles.getSelectionModel().getSelectedItem().getFile();
         File destFile = new File("C:\\Users\\email\\Downloads\\NewFolder\\" + saveNewFileEvent.getNewFileName() + "." + FilenameUtils.getExtension(sourceFile.getName()));
-        fileSystemService.saveNewFile(sourceFile, destFile);
+        fileSystemService.copyToNewFile(sourceFile, destFile);
         publisher.publishEvent(new RefreshFileListEvent());
 
     }
