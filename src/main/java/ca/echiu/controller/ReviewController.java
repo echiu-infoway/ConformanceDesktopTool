@@ -113,6 +113,7 @@ public class ReviewController implements FileSystemController {
         }
     }
     private void setReviewTextFilePath(){
+        if(scenarioListComboBox.getSelectionModel().getSelectedItem()==null){return;}
         videoReviewFile = scenarioListComboBox.getSelectionModel().getSelectedItem().toString();
         reviewTextFile = fileSystemService.getReviewFile(directoryPath, videoReviewFile);
     }
