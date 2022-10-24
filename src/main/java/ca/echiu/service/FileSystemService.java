@@ -34,7 +34,7 @@ public class FileSystemService {
 
     }
 
-    public void saveNewFile(File source, File destination) throws IOException {
+    public void saveNewFile(File source, File destination) {
         try {
             Files.copy(source.toPath(), destination.toPath());
         } catch (FileAlreadyExistsException fileAlreadyExistsException) {
