@@ -75,7 +75,6 @@ public class FileSystemService {
     public void saveReviewFile(String filePath, List<ReviewFileModel> content) throws IOException, CsvRequiredFieldEmptyException, CsvDataTypeMismatchException {
         FileWriter fileWriter = new FileWriter(filePath);
         StatefulBeanToCsv<ReviewFileModel> reviewFileModelStatefulBeanToCsv = new StatefulBeanToCsvBuilder<ReviewFileModel>(fileWriter).withSeparator(CSVWriter.DEFAULT_SEPARATOR).withApplyQuotesToAll(false).build();
-        System.out.println(content);
         reviewFileModelStatefulBeanToCsv.write(content);
         fileWriter.close();
     }

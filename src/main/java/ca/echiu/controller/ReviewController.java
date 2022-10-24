@@ -60,6 +60,15 @@ public class ReviewController implements FileSystemController {
         timestampColumn.setCellValueFactory(new PropertyValueFactory<>("timestamp"));
         TableColumn<ReviewFileModel, String> commentsColumn = new TableColumn<>(COMMENTS);
         commentsColumn.setCellValueFactory(new PropertyValueFactory<>("comments"));
+        commentsColumn.setCellFactory(tc -> {
+            TableCell<ReviewFileModel, String> cell = new TableCell<>();
+            Text text = new Text();
+            cell.setGraphic(text);
+            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+            text.wrappingWidthProperty().bind(commentsColumn.widthProperty());
+            text.textProperty().bind(cell.itemProperty());
+            return cell;
+        });
         reviewTableView.getColumns().add(timestampColumn);
         reviewTableView.getColumns().add(commentsColumn);
         timestampColumn.setMaxWidth(1000);
