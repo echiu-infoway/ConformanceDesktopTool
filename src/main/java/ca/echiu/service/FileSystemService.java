@@ -51,7 +51,6 @@ public class FileSystemService {
 
     public List<ReviewFileModel> parseReviewFile(String filePath) throws FileNotFoundException {
         List<ReviewFileModel> reviewFileModelList = new CsvToBeanBuilder<ReviewFileModel>(new FileReader(filePath)).withType(ReviewFileModel.class).build().parse();
-        reviewFileModelList.forEach(System.out::println);
         return reviewFileModelList;
     }
 

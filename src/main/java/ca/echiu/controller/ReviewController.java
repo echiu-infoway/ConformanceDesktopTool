@@ -49,17 +49,20 @@ public class ReviewController implements FileSystemController {
     private String videoReviewFile;
     private String reviewTextFile;
     private List<ReviewFileModel> reviewFileModelList;
+    private final String TIMESTAMP = "Timestamp";
+    private final String COMMENTS = "Comments";
 
     private final String NO_FILES_FOUND = "No files found in folder";
 
     @FXML
     public void initialize() throws FileNotFoundException {
-        TableColumn<ReviewFileModel, String> timestampColumn = new TableColumn<>("Timestamp");
+        TableColumn<ReviewFileModel, String> timestampColumn = new TableColumn<>(TIMESTAMP);
         timestampColumn.setCellValueFactory(new PropertyValueFactory<>("timestamp"));
-        TableColumn<ReviewFileModel, String> commentsColumn = new TableColumn<>("Comments");
+        TableColumn<ReviewFileModel, String> commentsColumn = new TableColumn<>(COMMENTS);
         commentsColumn.setCellValueFactory(new PropertyValueFactory<>("comments"));
         reviewTableView.getColumns().add(timestampColumn);
         reviewTableView.getColumns().add(commentsColumn);
+        timestampColumn.setMaxWidth(1000);
 
 
     }

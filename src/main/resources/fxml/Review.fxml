@@ -16,9 +16,11 @@
             <Button onAction="#chooseDirectory" text="Select Directory..."/>
             <ComboBox fx:id="scenarioListComboBox"  promptText="Select scenario" onAction="#setReviewForScenario"/>
             <Text fx:id="directoryPathText"/>
-            <TableView fx:id="reviewTableView"/>
+            <TableView fx:id="reviewTableView">
+                <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/> </columnResizePolicy>
+            </TableView>
             <Label text="Enter Review Comments"/>
-            <TextArea fx:id="reviewCommentsTextArea"/>
+            <TextArea fx:id="reviewCommentsTextArea" wrapText="true"/>
             <HBox >
                 <children>
                     <Pane HBox.hgrow="ALWAYS"/>
