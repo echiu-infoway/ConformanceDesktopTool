@@ -86,7 +86,6 @@ public class ReviewController implements FileSystemController {
 
     public void setReviewForScenario() {
         setReviewTextFilePath();
-        System.out.println(reviewTextFile);
         loadCsvObjectsInTable(reviewTextFile);
         eventPublisher.publishEvent(new PlayMediaEvent(scenarioListComboBox.getSelectionModel().getSelectedItem().getFile()));
 
@@ -107,11 +106,11 @@ public class ReviewController implements FileSystemController {
 
     public void saveReviewComments(ActionEvent actionEvent) {
         try {
-            System.out.println(reviewTextFile);
             reviewFileModelList = fileSystemService.parseReviewFile(reviewTextFile);
             reviewFileModelList.add(new ReviewFileModel("5:33", reviewCommentsTextArea.getText()));
-            System.out.println("addReviewComments:"+reviewFileModelList);
             fileSystemService.saveReviewFile(reviewTextFile, reviewFileModelList);
+            reviewTableView.getItems().clear();
+            loadCsvObjectsInTable(reviewTextFile);
         } catch (FileNotFoundException fileNotFoundException){
             new AlertController(Alert.AlertType.ERROR, fileNotFoundException.getMessage()+" is not found");
 
