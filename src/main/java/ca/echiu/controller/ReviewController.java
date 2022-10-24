@@ -84,7 +84,6 @@ public class ReviewController implements FileSystemController {
         videoReviewFile = scenarioListComboBox.getSelectionModel().getSelectedItem().toString();
         String reviewTextFilePath = fileSystemService.getReviewFile(directoryPath, videoReviewFile);
         loadCsvObjectsInTable(reviewTextFilePath);
-        System.out.println(scenarioListComboBox.getSelectionModel().getSelectedItem());
         eventPublisher.publishEvent(new PlayMediaEvent(scenarioListComboBox.getSelectionModel().getSelectedItem().getFile()));
 
     }
