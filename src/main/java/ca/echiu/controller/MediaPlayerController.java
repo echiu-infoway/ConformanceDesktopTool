@@ -66,6 +66,8 @@ public class MediaPlayerController {
         setMediaControls();
         setPlayButtonFunctions();
         setMediaPlayerListener();
+        System.out.println(mediaPane.getScene().getHeight());
+        mediaView.setFitHeight(mediaPane.getScene().getHeight()*0.9);
 
     }
 
