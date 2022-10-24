@@ -120,7 +120,8 @@ public class ReviewController implements FileSystemController {
     public void saveReviewComments(ActionEvent actionEvent) {
         try {
             reviewFileModelList = fileSystemService.parseReviewFile(reviewTextFile);
-            reviewFileModelList.add(new ReviewFileModel("5:33", reviewCommentsTextArea.getText()));
+
+            reviewFileModelList.add(new ReviewFileModel(MediaPlayerController.getCurrentPlayTime(), reviewCommentsTextArea.getText()));
             fileSystemService.saveReviewFile(reviewTextFile, reviewFileModelList);
             reviewTableView.getItems().clear();
             loadCsvObjectsInTable(reviewTextFile);

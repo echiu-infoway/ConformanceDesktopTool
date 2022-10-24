@@ -69,6 +69,10 @@ public class MediaPlayerController {
 
     }
 
+    public static String getCurrentPlayTime(){
+        return formatDurationToTimeString(mediaPlayer.getCurrentTime());
+    }
+
     private void setMediaControls() {
         mediaButtonsHBox.setAlignment(Pos.CENTER);
         mediaButtonsHBox.setPadding(new Insets(5, 10, 5, 10));
@@ -206,7 +210,7 @@ public class MediaPlayerController {
 
     }
 
-    protected void updateValues() {
+    private void updateValues() {
         if (playTime != null && timeSlider != null && volumeSlider != null) {
             Platform.runLater(new Runnable() {
                 public void run() {
@@ -265,6 +269,20 @@ public class MediaPlayerController {
                         elapsedSeconds);
             }
         }
+    }
+
+    private static String formatDurationToTimeString(Duration elapsed){
+        int intElapsed = (int) Math.floor(elapsed.toSeconds());
+        int elapsedHours = intElapsed / (60 * 60);
+        if (elapsedHours > 0) {
+            intElapsed -= elapsedHours * 60 * 60;
+        }
+        int elapsedMinutes = intElapsed / 60;
+        int elapsedSeconds = intElapsed - elapsedHours * 60 * 60
+                - elapsedMinutes * 60;
+
+        return String.format("%02d:%02d", elapsedMinutes,
+                elapsedSeconds);
     }
 
 
