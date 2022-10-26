@@ -8,12 +8,16 @@ import ca.echiu.wrapper.FileWrapper;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
+import javafx.util.Duration;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +28,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.LocalTime;
 import java.util.List;
 
 @Component
@@ -76,6 +81,14 @@ public class ReviewController implements DirectorySelectable {
             text.textProperty().bind(cell.itemProperty());
             return cell;
         });
+        reviewTableView.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+                    loadReviewComment((ReviewFileModel) reviewTableView.getSelectionModel().getSelectedItem());
+                }
+            }
+        });
         reviewTableView.getColumns().add(timestampColumn);
         reviewTableView.getColumns().add(commentsColumn);
         timestampColumn.setMaxWidth(1000);
@@ -119,16 +132,19 @@ public class ReviewController implements DirectorySelectable {
             reviewTableView.setPlaceholder(new Label("Review not yet started or not found"));
         }
     }
-    private void setReviewDirectoryAndFile(){
-        if(scenarioListComboBox.getSelectionModel().getSelectedItem()==null){return;}
+
+    private void setReviewDirectoryAndFile() {
+        if (scenarioListComboBox.getSelectionModel().getSelectedItem() == null) {
+            return;
+        }
         videoReviewFileName = scenarioListComboBox.getSelectionModel().getSelectedItem().toString();
-        FileSystemService.setReviewDirectoryPath(Path.of(videoDirectoryPath.toString()+"\\"+FilenameUtils.removeExtension(videoReviewFileName)));
-        FileSystemService.setReviewTextFilePath(Path.of(FileSystemService.getReviewDirectoryPath().toString()+"\\"+utils.getCsvFileNameFromOtherFileName(videoReviewFileName)));
+        FileSystemService.setReviewDirectoryPath(Path.of(videoDirectoryPath.toString() + "\\" + FilenameUtils.removeExtension(videoReviewFileName)));
+        FileSystemService.setReviewTextFilePath(Path.of(FileSystemService.getReviewDirectoryPath().toString() + "\\" + utils.getCsvFileNameFromOtherFileName(videoReviewFileName)));
 
     }
 
     public void saveReviewComments(ActionEvent actionEvent) {
-        do{
+        do {
             try {
                 reviewFileModelList = fileSystemService.parseReviewFile(FileSystemService.getReviewTextFilePath());
                 reviewFileModelList.add(new ReviewFileModel(MediaPlayerController.getCurrentPlayTime(), reviewCommentsTextArea.getText()));
@@ -136,14 +152,38 @@ public class ReviewController implements DirectorySelectable {
                 reviewTableView.getItems().clear();
                 loadCsvObjectsInTable(FileSystemService.getReviewTextFilePath());
                 eventPublisher.publishEvent(new SaveSnapshotEvent());
-            } catch (FileNotFoundException fileNotFoundException){
+            } catch (FileNotFoundException fileNotFoundException) {
                 fileSystemService.createReviewFile();
                 continue;
             } catch (CsvRequiredFieldEmptyException | CsvDataTypeMismatchException | IOException e) {
-                new AlertController(Alert.AlertType.ERROR, "saveReviewComments: "+e.getMessage());
+                new AlertController(Alert.AlertType.ERROR, "saveReviewComments: " + e.getMessage());
             }
             break;
         } while (true);
 
+    }
+
+    private void loadReviewComment(ReviewFileModel reviewFileModel) {
+        System.out.println(reviewFileModel.toString());
+        String timestamp = reviewFileModel.getTimestamp();
+
+        int countOfColons = timestamp.length() - timestamp.replace(":", "").length();
+        if (countOfColons == 1){
+            java.time.Duration durationTime = java.time.Duration.between(LocalTime.MIN, LocalTime.parse("00:"+reviewFileModel.getTimestamp()));
+            Duration seekTime = new Duration(durationTime.toMillis());
+            mediaPlayerSeekToSeekTime(seekTime);
+
+
+        }
+        if (countOfColons == 2){
+            java.time.Duration durationTime = java.time.Duration.between(LocalTime.MIN, LocalTime.parse(reviewFileModel.getTimestamp()));
+            Duration seekTime = new Duration(durationTime.toMillis());
+            mediaPlayerSeekToSeekTime(seekTime);
+        }
+
+    }
+
+    private void mediaPlayerSeekToSeekTime(Duration seekTime){
+        MediaPlayerController.seekToPlayTime(seekTime);
     }
 }

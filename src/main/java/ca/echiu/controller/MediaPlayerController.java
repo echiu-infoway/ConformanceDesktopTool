@@ -106,6 +106,11 @@ public class MediaPlayerController {
         return splitCurrentPlayTime[0] + "_" + splitCurrentPlayTime[1];
     }
 
+    public static void seekToPlayTime(Duration seekTime){
+        mediaPlayer.seek(seekTime);
+        mediaPlayer.pause();
+    }
+
     private void setMediaControls() {
         mediaButtonsHBox.setAlignment(Pos.CENTER);
         mediaButtonsHBox.setPadding(new Insets(5, 10, 5, 10));
