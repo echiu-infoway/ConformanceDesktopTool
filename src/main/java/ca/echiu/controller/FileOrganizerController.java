@@ -43,6 +43,11 @@ public class FileOrganizerController implements FileSystemController {
 
     private static Path directoryPath;
 
+    @FXML
+    private void initialize(){
+        statusText.setText("No target directory selected");
+    }
+
     public void copyFileToNewName(){
       eventPublisher.publishEvent(new SaveNewFileEvent(fileName.getText()));
 

@@ -24,6 +24,11 @@
                 <VBox fx:id="navigatorVbox">
                     <children>
                         <fx:include source="Navigator.fxml"/>
+                        <VBox fx:id="fileOrganizerVbox">
+                            <children>
+                                <fx:include source="FileOrganizer.fxml"/>
+                            </children>
+                        </VBox>
                     </children>
                 </VBox>
                 <VBox fx:id="reviewVbox">
@@ -32,11 +37,7 @@
                     </children>
                 </VBox>
             </StackPane>
-                    <VBox fx:id="fileOrganizerVbox">
-                        <children>
-                            <fx:include source="FileOrganizer.fxml"/>
-                        </children>
-                    </VBox>
+
         </children>
     </VBox>
     <VBox GridPane.columnIndex="1" fillWidth="true">

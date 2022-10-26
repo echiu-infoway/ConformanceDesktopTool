@@ -57,7 +57,7 @@ public class FileSystemService {
         } catch (FileAlreadyExistsException fileAlreadyExistsException) {
             new AlertController(Alert.AlertType.ERROR, fileAlreadyExistsException.getMessage() + " already exists");
         } catch (IOException e) {
-            new AlertController(Alert.AlertType.ERROR, e.getMessage() + " could not be saved");
+            new AlertController(Alert.AlertType.ERROR, "copyToNewFile "+e.getMessage() + " could not be saved");
         }
     }
 
@@ -65,8 +65,6 @@ public class FileSystemService {
         List<ReviewFileModel> reviewFileModelList = new CsvToBeanBuilder<ReviewFileModel>(new FileReader(filePath.toString())).withType(ReviewFileModel.class).build().parse();
         return reviewFileModelList;
     }
-
-
 
     public void writeNewFile(Path filePath) {
         try {
@@ -79,16 +77,23 @@ public class FileSystemService {
 
     }
 
-    public void saveReviewFile(Path directoryPath, Path reviewFilePath, List<ReviewFileModel> content) throws IOException, CsvRequiredFieldEmptyException, CsvDataTypeMismatchException {
-        createNewDirectory(directoryPath);
+    public void saveReviewFile(List<ReviewFileModel> content) throws IOException, CsvRequiredFieldEmptyException, CsvDataTypeMismatchException {
         try {
             FileWriter fileWriter = new FileWriter(reviewTextFilePath.toString());
             StatefulBeanToCsv<ReviewFileModel> reviewFileModelStatefulBeanToCsv = new StatefulBeanToCsvBuilder<ReviewFileModel>(fileWriter).withSeparator(CSVWriter.DEFAULT_SEPARATOR).withApplyQuotesToAll(false).build();
             reviewFileModelStatefulBeanToCsv.write(content);
             fileWriter.close();
         } catch (FileNotFoundException fileNotFoundException){
-            writeNewFile(Path.of(directoryPath+"\\"+reviewFilePath));
+            new AlertController(Alert.AlertType.ERROR, "saveReviewFile: "+ fileNotFoundException.getMessage() + "is not found");
+        } catch (CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
+            new AlertController(Alert.AlertType.ERROR, "saveReviewFile: "+ e.getMessage());
         }
+    }
+
+    public void createReviewFile(){
+        createNewDirectory(reviewDirectoryPath);
+        writeNewFile(reviewTextFilePath);
+
     }
 
     public void writeImageFile(WritableImage image, Path directoryPath, String imageFileName){
@@ -98,7 +103,7 @@ public class FileSystemService {
             ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
         } catch (IOException e){
             e.printStackTrace();
-            new AlertController(Alert.AlertType.ERROR, e.getMessage());
+            new AlertController(Alert.AlertType.ERROR, "writeImageFile: "+e.getMessage());
         }
     }
 
@@ -106,6 +111,7 @@ public class FileSystemService {
         try{
             Files.createDirectory(directoryPath);
         } catch (FileAlreadyExistsException e){
+            System.out.println(e.getMessage()+" already exists, skipping createNewDirectory");
         }
         catch (IOException e){
             e.printStackTrace();

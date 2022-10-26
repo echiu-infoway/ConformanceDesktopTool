@@ -124,22 +124,27 @@ public class ReviewController implements FileSystemController {
         if(scenarioListComboBox.getSelectionModel().getSelectedItem()==null){return;}
         videoReviewFileName = scenarioListComboBox.getSelectionModel().getSelectedItem().toString();
         FileSystemService.setReviewDirectoryPath(Path.of(videoDirectoryPath.toString()+"\\"+FilenameUtils.removeExtension(videoReviewFileName)));
-        FileSystemService.setReviewTextFilePath(Path.of(FileSystemService.getReviewDirectoryPath().toString()+utils.getCsvFileNameFromOtherFileName(videoReviewFileName)));
+        FileSystemService.setReviewTextFilePath(Path.of(FileSystemService.getReviewDirectoryPath().toString()+"\\"+utils.getCsvFileNameFromOtherFileName(videoReviewFileName)));
 
     }
 
     public void saveReviewComments(ActionEvent actionEvent) {
-        try {
-            reviewFileModelList = fileSystemService.parseReviewFile(FileSystemService.getReviewTextFilePath());
-            reviewFileModelList.add(new ReviewFileModel(MediaPlayerController.getCurrentPlayTime(), reviewCommentsTextArea.getText()));
-            fileSystemService.saveReviewFile(FileSystemService.getReviewDirectoryPath(), FileSystemService.getReviewTextFilePath(), reviewFileModelList);
-            reviewTableView.getItems().clear();
-            loadCsvObjectsInTable(FileSystemService.getReviewTextFilePath());
-            eventPublisher.publishEvent(new SaveSnapshotEvent());
-        } catch (FileNotFoundException fileNotFoundException){
-            new AlertController(Alert.AlertType.ERROR, fileNotFoundException.getMessage()+" is not found");
-        } catch (CsvRequiredFieldEmptyException | CsvDataTypeMismatchException | IOException e) {
-            new AlertController(Alert.AlertType.ERROR, e.getMessage());
-        }
+        do{
+            try {
+                reviewFileModelList = fileSystemService.parseReviewFile(FileSystemService.getReviewTextFilePath());
+                reviewFileModelList.add(new ReviewFileModel(MediaPlayerController.getCurrentPlayTime(), reviewCommentsTextArea.getText()));
+                fileSystemService.saveReviewFile(reviewFileModelList);
+                reviewTableView.getItems().clear();
+                loadCsvObjectsInTable(FileSystemService.getReviewTextFilePath());
+                eventPublisher.publishEvent(new SaveSnapshotEvent());
+            } catch (FileNotFoundException fileNotFoundException){
+                fileSystemService.createReviewFile();
+                continue;
+            } catch (CsvRequiredFieldEmptyException | CsvDataTypeMismatchException | IOException e) {
+                new AlertController(Alert.AlertType.ERROR, "saveReviewComments: "+e.getMessage());
+            }
+            break;
+        } while (true);
+
     }
 }
