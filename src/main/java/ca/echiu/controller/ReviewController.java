@@ -1,6 +1,7 @@
 package ca.echiu.controller;
 
 import ca.echiu.event.PlayMediaEvent;
+import ca.echiu.event.SaveSnapshotEvent;
 import ca.echiu.model.ReviewFileModel;
 import ca.echiu.service.FileSystemService;
 import ca.echiu.wrapper.FileWrapper;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
+import java.awt.image.WritableRenderedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -121,14 +123,13 @@ public class ReviewController implements FileSystemController {
     public void saveReviewComments(ActionEvent actionEvent) {
         try {
             reviewFileModelList = fileSystemService.parseReviewFile(reviewTextFile);
-
             reviewFileModelList.add(new ReviewFileModel(MediaPlayerController.getCurrentPlayTime(), reviewCommentsTextArea.getText()));
             fileSystemService.saveReviewFile(reviewTextFile, reviewFileModelList);
             reviewTableView.getItems().clear();
             loadCsvObjectsInTable(reviewTextFile);
+            eventPublisher.publishEvent(new SaveSnapshotEvent());
         } catch (FileNotFoundException fileNotFoundException){
             new AlertController(Alert.AlertType.ERROR, fileNotFoundException.getMessage()+" is not found");
-
         } catch (CsvRequiredFieldEmptyException | CsvDataTypeMismatchException | IOException e) {
             new AlertController(Alert.AlertType.ERROR, e.getMessage());
         }

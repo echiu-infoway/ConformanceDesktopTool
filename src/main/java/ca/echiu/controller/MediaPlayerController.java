@@ -1,17 +1,21 @@
 package ca.echiu.controller;
 
 import ca.echiu.event.PlayMediaEvent;
+import ca.echiu.event.SaveSnapshotEvent;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -24,7 +28,9 @@ import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import javax.imageio.ImageIO;
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 
 @Component
@@ -73,6 +79,17 @@ public class MediaPlayerController {
 
     public static String getCurrentPlayTime(){
         return formatDurationToTimeString(mediaPlayer.getCurrentTime());
+    }
+
+    @EventListener
+    public void saveMediaViewSnapshot(SaveSnapshotEvent saveSnapshotEvent) {
+        WritableImage snapshot = mediaView.snapshot(new SnapshotParameters(), null);
+        File file = new File("test.png");
+        try{
+            ImageIO.write(SwingFXUtils.fromFXImage(snapshot, null), "png", file);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     private void setMediaControls() {
