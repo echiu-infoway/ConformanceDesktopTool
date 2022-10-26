@@ -29,6 +29,7 @@ import javafx.util.Duration;
 import lombok.Getter;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -97,7 +98,7 @@ public class MediaPlayerController {
     @EventListener
     public void saveMediaViewSnapshot(SaveSnapshotEvent saveSnapshotEvent) {
         WritableImage snapshot = mediaView.snapshot(new SnapshotParameters(), null);
-        fileSystemService.writeImageFile(snapshot, FileSystemService.getReviewDirectoryPath(), getCurrentPlayTimeForSnapshotFile());
+        fileSystemService.writeImageFile(snapshot, FileSystemService.getReviewDirectoryPath(), saveSnapshotEvent.getReviewComment());
     }
 
     private String getCurrentPlayTimeForSnapshotFile(){
