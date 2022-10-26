@@ -2,6 +2,7 @@ package ca.echiu.controller;
 
 import ca.echiu.event.PlayMediaEvent;
 import ca.echiu.event.SaveSnapshotEvent;
+import ca.echiu.service.FileSystemService;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -27,6 +28,7 @@ import javafx.scene.media.MediaView;
 import javafx.util.Duration;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -56,6 +58,9 @@ public class MediaPlayerController {
     private boolean atEndOfMedia = false;
     private Duration duration;
     private Path reviewDirectoryPath;
+
+    @Autowired
+    private FileSystemService fileSystemService;
 
     public MediaPlayerController() {
         this.mediaView = new MediaView();
@@ -90,24 +95,13 @@ public class MediaPlayerController {
     @EventListener
     public void saveMediaViewSnapshot(SaveSnapshotEvent saveSnapshotEvent) {
         WritableImage snapshot = mediaView.snapshot(new SnapshotParameters(), null);
-        try{
-            Files.createDirectory(reviewDirectoryPath);
-            File file = new File(reviewDirectoryPath+"\\"+getCurrentPlayTimeForSnapshotFile()+".png");
-            ImageIO.write(SwingFXUtils.fromFXImage(snapshot, null), "png", file);
-        } catch (IOException e){
-            e.printStackTrace();
-            new AlertController(Alert.AlertType.ERROR, e.getMessage());
-        }
+        fileSystemService.writeImageFile(snapshot, reviewDirectoryPath, getCurrentPlayTimeForSnapshotFile());
     }
 
     private String getCurrentPlayTimeForSnapshotFile(){
         String currentPlayTime = getCurrentPlayTime();
         String[] splitCurrentPlayTime = currentPlayTime.split(":");
         return splitCurrentPlayTime[0] + "_" + splitCurrentPlayTime[1];
-    }
-
-    private void makeDirectoryIfNotExist(){
-
     }
 
     private void setMediaControls() {

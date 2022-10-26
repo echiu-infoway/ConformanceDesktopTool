@@ -8,9 +8,12 @@ import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.control.Alert;
+import javafx.scene.image.WritableImage;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
 import java.io.*;
 import java.nio.file.*;
 import java.util.List;
@@ -78,5 +81,25 @@ public class FileSystemService {
         StatefulBeanToCsv<ReviewFileModel> reviewFileModelStatefulBeanToCsv = new StatefulBeanToCsvBuilder<ReviewFileModel>(fileWriter).withSeparator(CSVWriter.DEFAULT_SEPARATOR).withApplyQuotesToAll(false).build();
         reviewFileModelStatefulBeanToCsv.write(content);
         fileWriter.close();
+    }
+
+    public void writeImageFile(WritableImage image, Path directoryPath, String imageFileName){
+        try{
+            createNewDirectory(directoryPath);
+            File file = new File(directoryPath+"\\"+imageFileName+".png");
+            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+        } catch (IOException e){
+            e.printStackTrace();
+            new AlertController(Alert.AlertType.ERROR, e.getMessage());
+        }
+    }
+
+    private void createNewDirectory(Path reviewDirectorPath){
+        try{
+            Files.createDirectory(reviewDirectorPath);
+        } catch (IOException e){
+            e.printStackTrace();
+            new AlertController(Alert.AlertType.ERROR, e.getMessage());
+        }
     }
 }
