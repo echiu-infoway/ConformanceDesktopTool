@@ -1,15 +1,12 @@
 package ca.echiu.controller;
 
-import ca.echiu.event.PlayMediaEvent;
 import ca.echiu.event.RefreshFileListEvent;
 import ca.echiu.event.SaveNewFileEvent;
 import ca.echiu.service.FileSystemService;
 import ca.echiu.wrapper.FileWrapper;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
@@ -24,7 +21,7 @@ import java.nio.file.Path;
 
 @Component
 @FxmlView("fxml/FileOrganizer.fxml")
-public class FileOrganizerController implements FileSystemController {
+public class FileOrganizerController implements DirectorySelectable {
 
     @FXML
     private TextField fileName;

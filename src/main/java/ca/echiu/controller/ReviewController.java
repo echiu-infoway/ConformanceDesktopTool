@@ -14,7 +14,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
-import jdk.jshell.execution.Util;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,7 @@ import java.util.List;
 
 @Component
 @FxmlView("fxml/Review.fxml")
-public class ReviewController implements FileSystemController {
+public class ReviewController implements DirectorySelectable {
 
     @FXML
     private TableView reviewTableView;

@@ -27,7 +27,7 @@ import java.time.format.DateTimeFormatter;
 
 @Component
 @FxmlView("/fxml/Navigator.fxml")
-public class NavigatorController implements FileSystemController {
+public class NavigatorController implements DirectorySelectable {
 
     @FXML
     private ListView<FileWrapper> listViewOfFiles;
