@@ -72,13 +72,16 @@ public class MediaPlayerController {
     }
 //todo: there is a bug where first play a video, then choose another folder and play a video from there, the first video is still playing
     @EventListener
-    public void playVideo(PlayMediaEvent playMediaEvent) throws MalformedURLException {
+    public void playVideo(PlayMediaEvent playMediaEvent) {
         if(mediaPlayer != null){mediaPlayer.pause();}
         mediaView.setMediaPlayer(null);
         File videoFile = playMediaEvent.getFile();
-        String videoFileDirectory = FilenameUtils.removeExtension(videoFile.getName());
-        Media media = new Media(videoFile.toURI().toURL().toString());
-        mediaPlayer = new MediaPlayer(media);
+        try{
+            Media media = new Media(videoFile.toURI().toURL().toString());
+            mediaPlayer = new MediaPlayer(media);
+        } catch (MalformedURLException e) {
+            new AlertController(Alert.AlertType.ERROR, e.getMessage()+" is a bad file path");
+        }
         mediaButtonsHBox.getChildren().clear();
         setMediaControls();
         setPlayButtonFunctions();
