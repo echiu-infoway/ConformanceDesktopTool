@@ -309,7 +309,7 @@ public class MediaPlayerController {
         }
     }
 
-    private static String formatDurationToTimeString(Duration elapsed){
+    private static String formatDurationToTimeString(Duration elapsed) {
         int intElapsed = (int) Math.floor(elapsed.toSeconds());
         int elapsedHours = intElapsed / (60 * 60);
         if (elapsedHours > 0) {
@@ -319,6 +319,14 @@ public class MediaPlayerController {
         int elapsedSeconds = intElapsed - elapsedHours * 60 * 60
                 - elapsedMinutes * 60;
 
+        if (elapsedHours > 0) {
+            return String.format("%02d:%02d:00", elapsedHours,
+                    elapsedMinutes, elapsedSeconds);
+        }
+        if (elapsedHours < 0) {
+            return String.format("%02d:%02d", elapsedMinutes,
+                    elapsedSeconds);
+        }
         return String.format("%02d:%02d", elapsedMinutes,
                 elapsedSeconds);
     }
