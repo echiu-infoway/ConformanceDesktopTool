@@ -20,6 +20,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.util.Duration;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.apache.commons.io.FilenameUtils;
+import org.controlsfx.control.SearchableComboBox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
@@ -41,7 +42,7 @@ public class ReviewController implements DirectorySelectable {
     @FXML
     private AnchorPane reviewPane;
     @FXML
-    private ComboBox<FileWrapper> scenarioListComboBox;
+    private SearchableComboBox<FileWrapper> scenarioListComboBox;
     @FXML
     private TextArea reviewCommentsTextArea;
 

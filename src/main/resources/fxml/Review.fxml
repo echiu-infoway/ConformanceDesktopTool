@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.text.Text?>
+<?import org.controlsfx.control.SearchableComboBox?>
 <AnchorPane fx:id="reviewPane" xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="ca.echiu.controller.ReviewController">
@@ -14,7 +15,7 @@
         <children>
             <Label text="Review"/>
             <Button onAction="#chooseDirectory" text="Select Directory..."/>
-            <ComboBox fx:id="scenarioListComboBox"  promptText="Select scenario" onAction="#setReviewForScenario"/>
+            <SearchableComboBox fx:id="scenarioListComboBox" promptText="Select scenario" onHidden="#setReviewForScenario"/>
             <Text fx:id="directoryPathText"/>
             <TableView fx:id="reviewTableView">
                 <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/> </columnResizePolicy>
