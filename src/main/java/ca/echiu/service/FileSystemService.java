@@ -11,6 +11,8 @@ import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.control.Alert;
 import javafx.scene.image.WritableImage;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -23,8 +25,14 @@ public class FileSystemService {
 
     private File[] listOfFiles;
 
-    private final String MP4 = ".mp4";
-    private final String CSV = ".csv";
+    @Setter
+    @Getter
+    private static Path reviewDirectoryPath;
+
+    @Setter
+    @Getter
+    private static Path reviewTextFilePath;
+
     private final String columnNames = "TIMESTAMP,COMMENTS";
     private List<ReviewFileModel> reviewFileModelList;
 
@@ -53,34 +61,34 @@ public class FileSystemService {
         }
     }
 
-    public List<ReviewFileModel> parseReviewFile(String filePath) throws FileNotFoundException {
-        List<ReviewFileModel> reviewFileModelList = new CsvToBeanBuilder<ReviewFileModel>(new FileReader(filePath)).withType(ReviewFileModel.class).build().parse();
+    public List<ReviewFileModel> parseReviewFile(Path filePath) throws FileNotFoundException {
+        List<ReviewFileModel> reviewFileModelList = new CsvToBeanBuilder<ReviewFileModel>(new FileReader(filePath.toString())).withType(ReviewFileModel.class).build().parse();
         return reviewFileModelList;
     }
 
-    public String getReviewFile(Path directory, String videoFileName){
-        String reviewTextFileName = videoFileName.toString().toLowerCase().replace(MP4, CSV);
-        String directoryString = directory.toString();
-        String reviewFilePathString = directoryString + "\\" + reviewTextFileName;
-        return reviewFilePathString;
-    }
 
-    public void writeNewFile(String filePath) {
+
+    public void writeNewFile(Path filePath) {
         try {
-            FileWriter fileWriter = new FileWriter(filePath);
+            FileWriter fileWriter = new FileWriter(filePath.toString());
             fileWriter.write(columnNames);
             fileWriter.close();
         } catch (IOException ioException){
-            new AlertController(Alert.AlertType.ERROR, ioException.getMessage());
+            new AlertController(Alert.AlertType.ERROR, "writeNewFile: "+ioException.getMessage());
         }
 
     }
 
-    public void saveReviewFile(String filePath, List<ReviewFileModel> content) throws IOException, CsvRequiredFieldEmptyException, CsvDataTypeMismatchException {
-        FileWriter fileWriter = new FileWriter(filePath);
-        StatefulBeanToCsv<ReviewFileModel> reviewFileModelStatefulBeanToCsv = new StatefulBeanToCsvBuilder<ReviewFileModel>(fileWriter).withSeparator(CSVWriter.DEFAULT_SEPARATOR).withApplyQuotesToAll(false).build();
-        reviewFileModelStatefulBeanToCsv.write(content);
-        fileWriter.close();
+    public void saveReviewFile(Path directoryPath, Path reviewFilePath, List<ReviewFileModel> content) throws IOException, CsvRequiredFieldEmptyException, CsvDataTypeMismatchException {
+        createNewDirectory(directoryPath);
+        try {
+            FileWriter fileWriter = new FileWriter(reviewTextFilePath.toString());
+            StatefulBeanToCsv<ReviewFileModel> reviewFileModelStatefulBeanToCsv = new StatefulBeanToCsvBuilder<ReviewFileModel>(fileWriter).withSeparator(CSVWriter.DEFAULT_SEPARATOR).withApplyQuotesToAll(false).build();
+            reviewFileModelStatefulBeanToCsv.write(content);
+            fileWriter.close();
+        } catch (FileNotFoundException fileNotFoundException){
+            writeNewFile(Path.of(directoryPath+"\\"+reviewFilePath));
+        }
     }
 
     public void writeImageFile(WritableImage image, Path directoryPath, String imageFileName){
@@ -94,12 +102,14 @@ public class FileSystemService {
         }
     }
 
-    private void createNewDirectory(Path reviewDirectorPath){
+    public void createNewDirectory(Path directoryPath){
         try{
-            Files.createDirectory(reviewDirectorPath);
-        } catch (IOException e){
+            Files.createDirectory(directoryPath);
+        } catch (FileAlreadyExistsException e){
+        }
+        catch (IOException e){
             e.printStackTrace();
-            new AlertController(Alert.AlertType.ERROR, e.getMessage());
+            new AlertController(Alert.AlertType.ERROR, "createNewDirectory: "+e.getMessage());
         }
     }
 }

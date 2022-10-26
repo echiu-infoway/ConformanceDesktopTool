@@ -14,13 +14,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
-import lombok.Getter;
+import jdk.jshell.execution.Util;
 import net.rgielen.fxweaver.core.FxmlView;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
-import java.awt.image.WritableRenderedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -41,21 +41,26 @@ public class ReviewController implements FileSystemController {
     private TextArea reviewCommentsTextArea;
 
     @Autowired
-    private FileSystemService fileSystemService;
-    @Autowired
     ApplicationEventPublisher eventPublisher;
 
-    private static Path directoryPath;
+    @Autowired
+    FileSystemService fileSystemService;
+
+    private Utils utils = new Utils();
+
     @FXML
     private Text directoryPathText;
-
-    private String videoReviewFile;
-    private String reviewTextFile;
+    private Path videoDirectoryPath;
+    private String videoReviewFileName;
+    private Path reviewTextPath;
     private List<ReviewFileModel> reviewFileModelList;
     private final String TIMESTAMP = "Timestamp";
     private final String COMMENTS = "Comments";
 
     private final String NO_FILES_FOUND = "No files found in folder";
+
+    public ReviewController() {
+    }
 
     @FXML
     public void initialize() throws FileNotFoundException {
@@ -86,11 +91,11 @@ public class ReviewController implements FileSystemController {
         if (selectedDirectory == null) {
             return;
         }
-        directoryPath = selectedDirectory.toPath();
-        directoryPathText.setText(directoryPath.toString());
+        videoDirectoryPath = selectedDirectory.toPath();
+        directoryPathText.setText(videoDirectoryPath.toString());
         reviewTableView.getItems().clear();
         scenarioListComboBox.getItems().clear();
-        File[] files = fileSystemService.getListOfFiles(directoryPath);
+        File[] files = fileSystemService.getListOfFiles(videoDirectoryPath);
         if (files.length == 0) {
             new AlertController(Alert.AlertType.WARNING, NO_FILES_FOUND);
         }
@@ -101,33 +106,35 @@ public class ReviewController implements FileSystemController {
 
     public void setReviewForScenario() {
         reviewTableView.getItems().clear();
-        setReviewTextFilePath();
-        loadCsvObjectsInTable(reviewTextFile);
+        setReviewDirectoryAndFile();
+        loadCsvObjectsInTable(FileSystemService.getReviewTextFilePath());
         eventPublisher.publishEvent(new PlayMediaEvent(scenarioListComboBox.getSelectionModel().getSelectedItem().getFile()));
 
     }
 
-    private void loadCsvObjectsInTable(String filePath) {
+    private void loadCsvObjectsInTable(Path filePath) {
         try {
             reviewFileModelList = fileSystemService.parseReviewFile(filePath);
             reviewFileModelList.forEach(e -> reviewTableView.getItems().add(e));
         } catch (FileNotFoundException fileNotFoundException) {
-            fileSystemService.writeNewFile(filePath);
+            reviewTableView.setPlaceholder(new Label("Review not yet started or not found"));
         }
     }
-    private void setReviewTextFilePath(){
+    private void setReviewDirectoryAndFile(){
         if(scenarioListComboBox.getSelectionModel().getSelectedItem()==null){return;}
-        videoReviewFile = scenarioListComboBox.getSelectionModel().getSelectedItem().toString();
-        reviewTextFile = fileSystemService.getReviewFile(directoryPath, videoReviewFile);
+        videoReviewFileName = scenarioListComboBox.getSelectionModel().getSelectedItem().toString();
+        FileSystemService.setReviewDirectoryPath(Path.of(videoDirectoryPath.toString()+"\\"+FilenameUtils.removeExtension(videoReviewFileName)));
+        FileSystemService.setReviewTextFilePath(Path.of(FileSystemService.getReviewDirectoryPath().toString()+utils.getCsvFileNameFromOtherFileName(videoReviewFileName)));
+
     }
 
     public void saveReviewComments(ActionEvent actionEvent) {
         try {
-            reviewFileModelList = fileSystemService.parseReviewFile(reviewTextFile);
+            reviewFileModelList = fileSystemService.parseReviewFile(FileSystemService.getReviewTextFilePath());
             reviewFileModelList.add(new ReviewFileModel(MediaPlayerController.getCurrentPlayTime(), reviewCommentsTextArea.getText()));
-            fileSystemService.saveReviewFile(reviewTextFile, reviewFileModelList);
+            fileSystemService.saveReviewFile(FileSystemService.getReviewDirectoryPath(), FileSystemService.getReviewTextFilePath(), reviewFileModelList);
             reviewTableView.getItems().clear();
-            loadCsvObjectsInTable(reviewTextFile);
+            loadCsvObjectsInTable(FileSystemService.getReviewTextFilePath());
             eventPublisher.publishEvent(new SaveSnapshotEvent());
         } catch (FileNotFoundException fileNotFoundException){
             new AlertController(Alert.AlertType.ERROR, fileNotFoundException.getMessage()+" is not found");

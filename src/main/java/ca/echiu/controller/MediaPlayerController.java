@@ -26,6 +26,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.util.Duration;
+import lombok.Getter;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,8 +58,6 @@ public class MediaPlayerController {
     private boolean stopRequested = false;
     private boolean atEndOfMedia = false;
     private Duration duration;
-    private Path reviewDirectoryPath;
-
     @Autowired
     private FileSystemService fileSystemService;
 
@@ -74,10 +73,10 @@ public class MediaPlayerController {
 //todo: there is a bug where first play a video, then choose another folder and play a video from there, the first video is still playing
     @EventListener
     public void playVideo(PlayMediaEvent playMediaEvent) throws MalformedURLException {
+        if(mediaPlayer != null){mediaPlayer.pause();}
         mediaView.setMediaPlayer(null);
         File videoFile = playMediaEvent.getFile();
         String videoFileDirectory = FilenameUtils.removeExtension(videoFile.getName());
-        reviewDirectoryPath = Path.of(videoFile.getParent()+"\\"+videoFileDirectory);
         Media media = new Media(videoFile.toURI().toURL().toString());
         mediaPlayer = new MediaPlayer(media);
         mediaButtonsHBox.getChildren().clear();
@@ -95,7 +94,7 @@ public class MediaPlayerController {
     @EventListener
     public void saveMediaViewSnapshot(SaveSnapshotEvent saveSnapshotEvent) {
         WritableImage snapshot = mediaView.snapshot(new SnapshotParameters(), null);
-        fileSystemService.writeImageFile(snapshot, reviewDirectoryPath, getCurrentPlayTimeForSnapshotFile());
+        fileSystemService.writeImageFile(snapshot, FileSystemService.getReviewDirectoryPath(), getCurrentPlayTimeForSnapshotFile());
     }
 
     private String getCurrentPlayTimeForSnapshotFile(){
