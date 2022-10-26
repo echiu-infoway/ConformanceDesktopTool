@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.function.UnaryOperator;
 
 @Component
 @FxmlView("fxml/Review.fxml")
@@ -67,7 +68,25 @@ public class ReviewController implements DirectorySelectable {
     }
 
     @FXML
-    public void initialize() throws FileNotFoundException {
+    public void initialize(){
+        setUpReviewTable();
+        setUpCommentsTextArea();
+
+    }
+
+    private void setUpCommentsTextArea(){
+        UnaryOperator<TextFormatter.Change> textFilter = change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches("^[^.\\\\/:*?\"<>|]?[^\\\\/:*?\"<>|]*")){
+                return change;
+            }
+            return null;
+        };
+        reviewCommentsTextArea.setTextFormatter(new TextFormatter<String>(textFilter));
+
+    }
+
+    private void setUpReviewTable(){
         TableColumn<ReviewFileModel, String> timestampColumn = new TableColumn<>(TIMESTAMP);
         timestampColumn.setCellValueFactory(new PropertyValueFactory<>("timestamp"));
         TableColumn<ReviewFileModel, String> commentsColumn = new TableColumn<>(COMMENTS);
@@ -92,8 +111,6 @@ public class ReviewController implements DirectorySelectable {
         reviewTableView.getColumns().add(timestampColumn);
         reviewTableView.getColumns().add(commentsColumn);
         timestampColumn.setMaxWidth(1000);
-
-
     }
 
     @Override
