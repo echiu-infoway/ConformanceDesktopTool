@@ -14,6 +14,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
+import lombok.Getter;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -44,7 +45,7 @@ public class ReviewController implements FileSystemController {
     @Autowired
     ApplicationEventPublisher eventPublisher;
 
-    private Path directoryPath;
+    private static Path directoryPath;
     @FXML
     private Text directoryPathText;
 

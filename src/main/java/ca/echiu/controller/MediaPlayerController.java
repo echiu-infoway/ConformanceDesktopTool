@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.SnapshotParameters;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -25,6 +26,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.util.Duration;
 import net.rgielen.fxweaver.core.FxmlView;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +34,8 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @Component
 @FxmlView("fxml/MediaPlayer.fxml")
@@ -51,6 +55,7 @@ public class MediaPlayerController {
     private boolean stopRequested = false;
     private boolean atEndOfMedia = false;
     private Duration duration;
+    private Path reviewDirectoryPath;
 
     public MediaPlayerController() {
         this.mediaView = new MediaView();
@@ -66,13 +71,14 @@ public class MediaPlayerController {
     public void playVideo(PlayMediaEvent playMediaEvent) throws MalformedURLException {
         mediaView.setMediaPlayer(null);
         File videoFile = playMediaEvent.getFile();
+        String videoFileDirectory = FilenameUtils.removeExtension(videoFile.getName());
+        reviewDirectoryPath = Path.of(videoFile.getParent()+"\\"+videoFileDirectory);
         Media media = new Media(videoFile.toURI().toURL().toString());
         mediaPlayer = new MediaPlayer(media);
         mediaButtonsHBox.getChildren().clear();
         setMediaControls();
         setPlayButtonFunctions();
         setMediaPlayerListener();
-        System.out.println(mediaPane.getScene().getHeight());
         mediaView.setFitHeight(mediaPane.getScene().getHeight()*0.9);
 
     }
@@ -84,12 +90,24 @@ public class MediaPlayerController {
     @EventListener
     public void saveMediaViewSnapshot(SaveSnapshotEvent saveSnapshotEvent) {
         WritableImage snapshot = mediaView.snapshot(new SnapshotParameters(), null);
-        File file = new File("test.png");
         try{
+            Files.createDirectory(reviewDirectoryPath);
+            File file = new File(reviewDirectoryPath+"\\"+getCurrentPlayTimeForSnapshotFile()+".png");
             ImageIO.write(SwingFXUtils.fromFXImage(snapshot, null), "png", file);
         } catch (IOException e){
             e.printStackTrace();
+            new AlertController(Alert.AlertType.ERROR, e.getMessage());
         }
+    }
+
+    private String getCurrentPlayTimeForSnapshotFile(){
+        String currentPlayTime = getCurrentPlayTime();
+        String[] splitCurrentPlayTime = currentPlayTime.split(":");
+        return splitCurrentPlayTime[0] + "_" + splitCurrentPlayTime[1];
+    }
+
+    private void makeDirectoryIfNotExist(){
+
     }
 
     private void setMediaControls() {
