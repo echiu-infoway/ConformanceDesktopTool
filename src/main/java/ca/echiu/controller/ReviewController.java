@@ -20,6 +20,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.util.Duration;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.apache.commons.io.FilenameUtils;
+import org.controlsfx.control.SearchableComboBox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
@@ -41,7 +42,7 @@ public class ReviewController implements DirectorySelectable {
     @FXML
     private AnchorPane reviewPane;
     @FXML
-    private ComboBox<FileWrapper> scenarioListComboBox;
+    private SearchableComboBox<FileWrapper> scenarioListComboBox;
     @FXML
     private TextArea reviewCommentsTextArea;
 
@@ -63,6 +64,8 @@ public class ReviewController implements DirectorySelectable {
     private final String COMMENTS = "Comments";
 
     private final String NO_FILES_FOUND = "No files found in folder";
+    private final TableColumn.SortType sortAscending = TableColumn.SortType.ASCENDING;
+    private TableColumn<ReviewFileModel, String> timestampColumn;
 
     public ReviewController() {
     }
@@ -87,7 +90,7 @@ public class ReviewController implements DirectorySelectable {
     }
 
     private void setUpReviewTable(){
-        TableColumn<ReviewFileModel, String> timestampColumn = new TableColumn<>(TIMESTAMP);
+        timestampColumn = new TableColumn<>(TIMESTAMP);
         timestampColumn.setCellValueFactory(new PropertyValueFactory<>("timestamp"));
         TableColumn<ReviewFileModel, String> commentsColumn = new TableColumn<>(COMMENTS);
         commentsColumn.setCellValueFactory(new PropertyValueFactory<>("comments"));
@@ -137,6 +140,10 @@ public class ReviewController implements DirectorySelectable {
         reviewTableView.getItems().clear();
         setReviewDirectoryAndFile();
         loadCsvObjectsInTable(FileSystemService.getReviewTextFilePath());
+        reviewTableView.getSortOrder().add(timestampColumn);
+        timestampColumn.setSortType(sortAscending);
+        timestampColumn.setSortable(true);
+        reviewTableView.sort();
         eventPublisher.publishEvent(new PlayMediaEvent(scenarioListComboBox.getSelectionModel().getSelectedItem().getFile()));
 
     }
