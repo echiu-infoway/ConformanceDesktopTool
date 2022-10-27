@@ -6,6 +6,5 @@ public interface DirectorySelectable {
     public final String TOTAL_NUMBER_OF_FILES = "TOTAL NUMBER OF FILES: ";
 
     public void chooseDirectory();
-//    public void navigatorListClicked(MouseEvent mouseEvent);
 
 }
