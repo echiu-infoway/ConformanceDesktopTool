@@ -188,7 +188,6 @@ public class ReviewController implements DirectorySelectable {
     }
 
     private void loadReviewComment(ReviewFileModel reviewFileModel) {
-        System.out.println(reviewFileModel.toString());
         String timestamp = reviewFileModel.getTimestamp();
 
         int countOfColons = timestamp.length() - timestamp.replace(":", "").length();
