@@ -51,7 +51,7 @@ public class MediaPlayerController {
     @FXML
     private HBox mediaButtonsHBox;
     private static MediaPlayer mediaPlayer;
-    final Button playButton = new Button(">");
+    private Button playButton;
     private Slider timeSlider;
     private Label playTime;
     private Slider volumeSlider;
@@ -115,6 +115,7 @@ public class MediaPlayerController {
     private void setMediaControls() {
         mediaButtonsHBox.setAlignment(Pos.CENTER);
         mediaButtonsHBox.setPadding(new Insets(5, 10, 5, 10));
+        playButton = new Button(">");
 
         mediaButtonsHBox.getChildren().add(playButton);
         // Add spacer

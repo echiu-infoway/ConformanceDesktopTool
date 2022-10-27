@@ -50,7 +50,6 @@ public class NavigatorController implements DirectorySelectable {
     public NavigatorController(FileSystemService fileSystemService, ApplicationEventPublisher publisher) {
         this.fileSystemService = fileSystemService;
         this.publisher = publisher;
-        this.listViewOfFiles = new ListView();
     }
 
     @Override
