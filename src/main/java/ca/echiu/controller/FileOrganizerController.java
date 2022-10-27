@@ -61,7 +61,7 @@ public class FileOrganizerController implements DirectorySelectable {
         if (files.length == 0){statusText.setText(NO_APPLICABLE_FILES_FOUND);}
         for (File file : files) {
             listViewOfFiles.getItems().add(new FileWrapper(file));
-            statusText.setText(TOTAL_NUMBER_OF_FILES + String.valueOf(files.length));
+            statusText.setText(TOTAL_NUMBER_OF_FILES + files.length);
             listViewOfFiles.refresh();
 
     }
