@@ -71,16 +71,16 @@ public class ReviewController implements DirectorySelectable {
     }
 
     @FXML
-    public void initialize(){
+    public void initialize() {
         setUpReviewTable();
         setUpCommentsTextArea();
 
     }
 
-    private void setUpCommentsTextArea(){
+    private void setUpCommentsTextArea() {
         UnaryOperator<TextFormatter.Change> textFilter = change -> {
             String newText = change.getControlNewText();
-            if (newText.matches("^[^.\\\\/:*?\"<>|]?[^\\\\/:*?\"<>|]*")){
+            if (newText.matches("^[^.\\\\/:*?\"<>|]?[^\\\\/:*?\"<>|]*")) {
                 return change;
             }
             return null;
@@ -89,7 +89,7 @@ public class ReviewController implements DirectorySelectable {
 
     }
 
-    private void setUpReviewTable(){
+    private void setUpReviewTable() {
         timestampColumn = new TableColumn<>(TIMESTAMP);
         timestampColumn.setCellValueFactory(new PropertyValueFactory<>("timestamp"));
         TableColumn<ReviewFileModel, String> commentsColumn = new TableColumn<>(COMMENTS);
@@ -140,17 +140,22 @@ public class ReviewController implements DirectorySelectable {
         reviewTableView.getItems().clear();
         setReviewDirectoryAndFile();
         loadCsvObjectsInTable(FileSystemService.getReviewTextFilePath());
-        reviewTableView.getSortOrder().add(timestampColumn);
-        timestampColumn.setSortType(sortAscending);
-        timestampColumn.setSortable(true);
-        reviewTableView.sort();
-        eventPublisher.publishEvent(new PlayMediaEvent(scenarioListComboBox.getSelectionModel().getSelectedItem().getFile()));
+        if (reviewTableView != null && scenarioListComboBox.getSelectionModel().getSelectedItem() != null) {
+            reviewTableView.getSortOrder().add(timestampColumn);
+            timestampColumn.setSortType(sortAscending);
+            timestampColumn.setSortable(true);
+            reviewTableView.sort();
+            eventPublisher.publishEvent(new PlayMediaEvent(scenarioListComboBox.getSelectionModel().getSelectedItem().getFile()));
+        }
 
     }
 
     private void loadCsvObjectsInTable(Path filePath) {
         try {
             reviewFileModelList = fileSystemService.parseReviewFile(filePath);
+            if (reviewFileModelList == null) {
+                return;
+            }
             reviewFileModelList.forEach(e -> reviewTableView.getItems().add(e));
         } catch (FileNotFoundException fileNotFoundException) {
             reviewTableView.setPlaceholder(new Label("Review not yet started or not found"));
@@ -191,14 +196,14 @@ public class ReviewController implements DirectorySelectable {
         String timestamp = reviewFileModel.getTimestamp();
 
         int countOfColons = timestamp.length() - timestamp.replace(":", "").length();
-        if (countOfColons == 1){
-            java.time.Duration durationTime = java.time.Duration.between(LocalTime.MIN, LocalTime.parse("00:"+reviewFileModel.getTimestamp()));
+        if (countOfColons == 1) {
+            java.time.Duration durationTime = java.time.Duration.between(LocalTime.MIN, LocalTime.parse("00:" + reviewFileModel.getTimestamp()));
             Duration seekTime = new Duration(durationTime.toMillis());
             mediaPlayerSeekToSeekTime(seekTime);
 
 
         }
-        if (countOfColons == 2){
+        if (countOfColons == 2) {
             java.time.Duration durationTime = java.time.Duration.between(LocalTime.MIN, LocalTime.parse(reviewFileModel.getTimestamp()));
             Duration seekTime = new Duration(durationTime.toMillis());
             mediaPlayerSeekToSeekTime(seekTime);
@@ -206,7 +211,7 @@ public class ReviewController implements DirectorySelectable {
 
     }
 
-    private void mediaPlayerSeekToSeekTime(Duration seekTime){
+    private void mediaPlayerSeekToSeekTime(Duration seekTime) {
         MediaPlayerController.seekToPlayTime(seekTime);
     }
 }

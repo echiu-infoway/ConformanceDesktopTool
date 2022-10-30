@@ -62,6 +62,7 @@ public class FileSystemService {
     }
 
     public List<ReviewFileModel> parseReviewFile(Path filePath) throws FileNotFoundException {
+        if(filePath==null){return null;}
         List<ReviewFileModel> reviewFileModelList = new CsvToBeanBuilder<ReviewFileModel>(new FileReader(filePath.toString())).withType(ReviewFileModel.class).build().parse();
         return reviewFileModelList;
     }
