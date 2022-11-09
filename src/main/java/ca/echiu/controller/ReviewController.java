@@ -73,19 +73,6 @@ public class ReviewController implements DirectorySelectable {
     @FXML
     public void initialize() {
         setUpReviewTable();
-//        setUpCommentsTextArea();
-
-    }
-
-    private void setUpCommentsTextArea() {
-        UnaryOperator<TextFormatter.Change> textFilter = change -> {
-            String newText = change.getControlNewText();
-            if (newText.matches("^[^.\\\\/:*?\"<>|]?[^\\\\/:*?\"<>|]*")) {
-                return change;
-            }
-            return null;
-        };
-        reviewCommentsTextArea.setTextFormatter(new TextFormatter<String>(textFilter));
 
     }
 
