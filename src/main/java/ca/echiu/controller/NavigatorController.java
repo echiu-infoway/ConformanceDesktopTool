@@ -7,6 +7,7 @@ import ca.echiu.service.FileSystemService;
 import ca.echiu.wrapper.FileWrapper;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -32,7 +33,7 @@ public class NavigatorController implements DirectorySelectable {
     @FXML
     private ListView<FileWrapper> listViewOfFiles;
     @FXML
-    private Text directoryPathText;
+    private Label directoryPathText;
     @Autowired
     private FileSystemService fileSystemService;
     @FXML

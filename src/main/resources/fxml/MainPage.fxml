@@ -17,8 +17,7 @@
     <rowConstraints>
         <RowConstraints vgrow="SOMETIMES"/>
     </rowConstraints>
-
-    <VBox prefWidth="350" spacing="5" GridPane.columnIndex="0" fillWidth="true">
+    <VBox maxWidth="350" prefWidth="350" spacing="5" GridPane.columnIndex="0" fillWidth="true">
         <children>
             <StackPane fx:id="topLeftStackPane">
                 <VBox fx:id="navigatorVbox">

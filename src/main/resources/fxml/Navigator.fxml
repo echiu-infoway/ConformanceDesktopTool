@@ -10,11 +10,11 @@
 <AnchorPane fx:id="navigatorPane" xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="ca.echiu.controller.NavigatorController">
-    <VBox AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.bottomAnchor="0">
+    <VBox maxWidth="350" AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.bottomAnchor="0">
         <children>
             <Label text="Navigator"/>
             <Button onAction="#chooseDirectory" text="Select Directory..."/>
-            <Text fx:id="directoryPathText"/>
+            <Label prefHeight="50" maxHeight="400" fx:id="directoryPathText" wrapText="true"/>
             <Text fx:id="statusText"/>
             <ListView fx:id="listViewOfFiles" onMouseClicked="#navigatorListClicked"/>
         </children>
