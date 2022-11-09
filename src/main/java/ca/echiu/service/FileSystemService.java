@@ -100,7 +100,8 @@ public class FileSystemService {
     public void writeImageFile(WritableImage image, Path directoryPath, String imageFileName){
         try{
             createNewDirectory(directoryPath);
-            File file = new File(directoryPath+"\\"+imageFileName+".png");
+            String compliantImageFileName = imageFileName.replace("^\\.+", "").replaceAll("[\\\\/:*?\"<>|]", ",");
+            File file = new File(directoryPath+"\\"+compliantImageFileName+".png");
             ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
         } catch (IOException e){
             e.printStackTrace();

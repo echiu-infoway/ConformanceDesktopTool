@@ -73,7 +73,7 @@ public class ReviewController implements DirectorySelectable {
     @FXML
     public void initialize() {
         setUpReviewTable();
-        setUpCommentsTextArea();
+//        setUpCommentsTextArea();
 
     }
 
