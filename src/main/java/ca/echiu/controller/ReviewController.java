@@ -55,7 +55,7 @@ public class ReviewController implements DirectorySelectable {
     private Utils utils = new Utils();
 
     @FXML
-    private Text directoryPathText;
+    private Label directoryPathText;
     private Path videoDirectoryPath;
     private String videoReviewFileName;
     private Path reviewTextPath;

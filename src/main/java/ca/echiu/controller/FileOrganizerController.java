@@ -5,6 +5,7 @@ import ca.echiu.event.SaveNewFileEvent;
 import ca.echiu.service.FileSystemService;
 import ca.echiu.wrapper.FileWrapper;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -26,7 +27,7 @@ public class FileOrganizerController implements DirectorySelectable {
     @FXML
     private TextField fileName;
     @FXML
-    private Text directoryPathText;
+    private Label directoryPathText;
     @FXML
     private Text statusText;
     @FXML
