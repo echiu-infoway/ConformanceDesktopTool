@@ -8,8 +8,11 @@ public class SaveSnapshotEvent {
 
     @Getter
     private String reviewComment;
+    @Getter
+    private String timeStampString;
 
-    public SaveSnapshotEvent(String reviewComment) {
+    public SaveSnapshotEvent(String reviewComment, String timeStampString) {
         this.reviewComment = StringUtils.left(reviewComment, 100);
+        this.timeStampString = timeStampString.replace(":","");
     }
 }

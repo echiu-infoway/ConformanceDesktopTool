@@ -180,7 +180,7 @@ public class ReviewController implements DirectorySelectable {
                 fileSystemService.saveReviewFile(reviewFileModelList);
                 reviewTableView.getItems().clear();
                 loadCsvObjectsInTable(FileSystemService.getReviewTextFilePath());
-                eventPublisher.publishEvent(new SaveSnapshotEvent(reviewCommentsTextArea.getText()));
+                eventPublisher.publishEvent(new SaveSnapshotEvent(reviewCommentsTextArea.getText(), MediaPlayerController.getCurrentPlayTime()));
             } catch (FileNotFoundException fileNotFoundException) {
                 fileSystemService.createReviewFile();
                 continue;
