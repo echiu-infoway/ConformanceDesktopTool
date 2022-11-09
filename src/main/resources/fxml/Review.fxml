@@ -16,7 +16,7 @@
             <Label text="Review"/>
             <Button onAction="#chooseDirectory" text="Select Directory..."/>
             <SearchableComboBox fx:id="scenarioListComboBox" promptText="Select scenario" onHidden="#setReviewForScenario"/>
-            <Label prefWidth="100" maxWidth="200" fx:id="directoryPathText" wrapText="true"/>
+            <Label fx:id="directoryPathText" wrapText="true"/>
             <TableView fx:id="reviewTableView">
                 <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/> </columnResizePolicy>
             </TableView>
