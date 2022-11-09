@@ -144,6 +144,7 @@ public class ReviewController implements DirectorySelectable {
                 return;
             }
             reviewFileModelList.forEach(e -> reviewTableView.getItems().add(e));
+            reviewTableView.sort();
         } catch (FileNotFoundException fileNotFoundException) {
             reviewTableView.setPlaceholder(new Label("Review not yet started or not found"));
         }
