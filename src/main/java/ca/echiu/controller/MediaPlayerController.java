@@ -98,7 +98,7 @@ public class MediaPlayerController {
     @EventListener
     public void saveMediaViewSnapshot(SaveSnapshotEvent saveSnapshotEvent) {
         WritableImage snapshot = mediaView.snapshot(new SnapshotParameters(), null);
-        String snapshotFileName = saveSnapshotEvent.getTimeStampString()+" "+saveSnapshotEvent.getReviewComment();
+        String snapshotFileName = saveSnapshotEvent.getTimeStampString()+"@"+saveSnapshotEvent.getReviewComment();
         fileSystemService.writeImageFile(snapshot, FileSystemService.getReviewDirectoryPath(), snapshotFileName);
     }
 
