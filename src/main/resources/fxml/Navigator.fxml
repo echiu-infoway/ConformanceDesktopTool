@@ -13,7 +13,10 @@
     <VBox maxWidth="350" AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.bottomAnchor="0">
         <children>
             <Label text="Navigator"/>
-            <Button onAction="#chooseDirectory" text="Select Directory..."/>
+            <HBox spacing="5">
+                <Button onAction="#chooseDirectory" text="Select Directory..."/>
+                <Button onAction="#openDirectoryOnSystem" text="Open Directory"/>
+            </HBox>
             <Label onMousePressed="#openDirectoryOnSystem" prefHeight="100" maxHeight="400" fx:id="directoryPathText" wrapText="true"/>
             <Text fx:id="statusText"/>
             <ListView fx:id="listViewOfFiles" onMouseClicked="#navigatorListClicked"/>
