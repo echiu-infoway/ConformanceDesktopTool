@@ -11,6 +11,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -25,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -120,6 +123,15 @@ public class ReviewController implements DirectorySelectable {
         }
         for (File file : files) {
             scenarioListComboBox.getItems().add(new FileWrapper(file));
+        }
+    }
+
+    public void openDirectoryOnSystem() {
+        try {
+            Desktop desktop = Desktop.getDesktop();
+            desktop.open(videoDirectoryPath.toFile());
+        } catch (IOException e){
+            new AlertController(Alert.AlertType.ERROR, e.getMessage());
         }
     }
 
