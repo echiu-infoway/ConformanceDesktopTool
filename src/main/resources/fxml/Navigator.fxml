@@ -14,7 +14,7 @@
         <children>
             <Label text="Navigator"/>
             <Button onAction="#chooseDirectory" text="Select Directory..."/>
-            <Label prefHeight="100" maxHeight="400" fx:id="directoryPathText" wrapText="true"/>
+            <Label onMousePressed="#openDirectoryOnSystem" prefHeight="100" maxHeight="400" fx:id="directoryPathText" wrapText="true"/>
             <Text fx:id="statusText"/>
             <ListView fx:id="listViewOfFiles" onMouseClicked="#navigatorListClicked"/>
         </children>

@@ -20,6 +20,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -67,6 +68,14 @@ public class NavigatorController implements DirectorySelectable {
             listViewOfFiles.getItems().add(new FileWrapper(file));
             statusText.setText(TOTAL_NUMBER_OF_FILES + files.length);
             listViewOfFiles.refresh();
+        }
+    }
+    public void openDirectoryOnSystem() {
+        try {
+            Desktop desktop = Desktop.getDesktop();
+            desktop.open(directoryPath.toFile());
+        } catch (IOException e){
+            new AlertController(Alert.AlertType.ERROR, e.getMessage());
         }
     }
 

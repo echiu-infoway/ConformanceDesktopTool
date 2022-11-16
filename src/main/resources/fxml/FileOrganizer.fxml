@@ -14,7 +14,7 @@
         <children>
             <Label text="File Organizer"/>
             <Button onAction="#chooseDirectory" text="Select Directory..."/>
-            <Label prefHeight="50" maxHeight="400" fx:id="directoryPathText" wrapText="true"/>
+            <Label onMousePressed="#openDirectoryOnSystem" prefHeight="50" maxHeight="400" fx:id="directoryPathText" wrapText="true"/>
             <Text fx:id="statusText"/>
             <Text  id="title" text="Name of Scenario"/>
             <HBox >
