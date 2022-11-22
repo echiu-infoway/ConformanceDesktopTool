@@ -13,8 +13,11 @@
     <VBox maxWidth="350" spacing="5" AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.bottomAnchor="0">
         <children>
             <Label text="File Organizer"/>
-            <Button onAction="#chooseDirectory" text="Select Directory..."/>
-            <Label prefHeight="50" maxHeight="400" fx:id="directoryPathText" wrapText="true"/>
+            <HBox spacing="5">
+                <Button onAction="#chooseDirectory" text="Select Directory..."/>
+                <Button onMousePressed="#openDirectoryOnSystem" text="Open Directory"/>
+            </HBox>
+            <Label onMousePressed="#openDirectoryOnSystem" prefHeight="50" maxHeight="400" fx:id="directoryPathText" wrapText="true"/>
             <Text fx:id="statusText"/>
             <Text  id="title" text="Name of Scenario"/>
             <HBox >

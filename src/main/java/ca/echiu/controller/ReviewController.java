@@ -130,8 +130,10 @@ public class ReviewController implements DirectorySelectable {
         try {
             Desktop desktop = Desktop.getDesktop();
             desktop.open(videoDirectoryPath.toFile());
-        } catch (IOException e){
+        } catch (IOException e) {
             new AlertController(Alert.AlertType.ERROR, e.getMessage());
+        } catch (NullPointerException e) {
+            new AlertController(Alert.AlertType.ERROR, "No folder selected yet");
         }
     }
 
