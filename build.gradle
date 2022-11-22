@@ -11,6 +11,9 @@ version = '0.0.1-SNAPSHOT'
 
 repositories {
 	mavenCentral()
+  maven{
+  url "https://plugins.gradle.org/m2/"
+  }
 }
 
 javafx {
@@ -35,10 +38,11 @@ dependencies {
 
 }
 
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
 
 application {
-	mainClass = 'ca.echiu.SpingBootApplication'
+	mainClass = 'ca.echiu.SpringBootApplication'
 }
