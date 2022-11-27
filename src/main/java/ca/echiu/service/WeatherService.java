@@ -6,6 +6,6 @@ import org.springframework.stereotype.Service;
 public class WeatherService {
 
     public String getWeatherForecast(){
-        return "It's gonna be FALLing for you";
+        return "Winter is coming...";
     }
 }
