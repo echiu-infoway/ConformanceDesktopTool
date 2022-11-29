@@ -20,6 +20,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.util.Duration;
+import lombok.extern.slf4j.Slf4j;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.apache.commons.io.FilenameUtils;
 import org.controlsfx.control.SearchableComboBox;
@@ -38,182 +39,204 @@ import java.util.function.UnaryOperator;
 
 @Component
 @FxmlView("fxml/Review.fxml")
+@Slf4j
 public class ReviewController implements DirectorySelectable {
 
-    @FXML
-    private TableView reviewTableView;
-    @FXML
-    private AnchorPane reviewPane;
-    @FXML
-    private SearchableComboBox<FileWrapper> scenarioListComboBox;
-    @FXML
-    private TextArea reviewCommentsTextArea;
+  @FXML
+  private TableView reviewTableView;
+  @FXML
+  private AnchorPane reviewPane;
+  @FXML
+  private SearchableComboBox<FileWrapper> scenarioListComboBox;
+  @FXML
+  private TextArea reviewCommentsTextArea;
 
-    @Autowired
-    ApplicationEventPublisher eventPublisher;
+  @Autowired
+  ApplicationEventPublisher eventPublisher;
 
-    @Autowired
-    FileSystemService fileSystemService;
+  @Autowired
+  FileSystemService fileSystemService;
 
-    private Utils utils = new Utils();
+  private Utils utils = new Utils();
 
-    @FXML
-    private Label directoryPathText;
-    private Path videoDirectoryPath;
-    private String videoReviewFileName;
-    private Path reviewTextPath;
-    private List<ReviewFileModel> reviewFileModelList;
-    private final String TIMESTAMP = "Timestamp";
-    private final String COMMENTS = "Comments";
+  @FXML
+  private Label directoryPathText;
+  private Path videoDirectoryPath;
+  private String videoReviewFileName;
+  private Path reviewTextPath;
+  private List<ReviewFileModel> reviewFileModelList;
+  private final String TIMESTAMP = "Timestamp";
+  private final String COMMENTS = "Comments";
 
-    private final String NO_FILES_FOUND = "No files found in folder";
-    private final TableColumn.SortType sortAscending = TableColumn.SortType.ASCENDING;
-    private TableColumn<ReviewFileModel, String> timestampColumn;
+  private final String NO_FILES_FOUND = "No files found in folder";
+  private final TableColumn.SortType sortAscending = TableColumn.SortType.ASCENDING;
+  private TableColumn<ReviewFileModel, String> timestampColumn;
 
-    public ReviewController() {
-    }
+  public ReviewController() {
+  }
 
-    @FXML
-    public void initialize() {
-        setUpReviewTable();
+  @FXML
+  public void initialize() {
+    setUpReviewTable();
 
-    }
+  }
 
-    private void setUpReviewTable() {
-        timestampColumn = new TableColumn<>(TIMESTAMP);
-        timestampColumn.setCellValueFactory(new PropertyValueFactory<>("timestamp"));
-        TableColumn<ReviewFileModel, String> commentsColumn = new TableColumn<>(COMMENTS);
-        commentsColumn.setCellValueFactory(new PropertyValueFactory<>("comments"));
-        commentsColumn.setCellFactory(tc -> {
-            TableCell<ReviewFileModel, String> cell = new TableCell<>();
-            Text text = new Text();
-            cell.setGraphic(text);
-            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
-            text.wrappingWidthProperty().bind(commentsColumn.widthProperty());
-            text.textProperty().bind(cell.itemProperty());
-            return cell;
-        });
-        reviewTableView.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
-                    loadReviewComment((ReviewFileModel) reviewTableView.getSelectionModel().getSelectedItem());
-                }
-            }
-        });
-        reviewTableView.getColumns().add(timestampColumn);
-        reviewTableView.getColumns().add(commentsColumn);
-        timestampColumn.setMaxWidth(1000);
-    }
-
-    @Override
-    public void chooseDirectory() {
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        File selectedDirectory = directoryChooser.showDialog(reviewPane.getScene().getWindow());
-        if (selectedDirectory == null) {
-            return;
+  private void setUpReviewTable() {
+    timestampColumn = new TableColumn<>(TIMESTAMP);
+    timestampColumn.setCellValueFactory(new PropertyValueFactory<>("timestamp"));
+    TableColumn<ReviewFileModel, String> commentsColumn = new TableColumn<>(COMMENTS);
+    commentsColumn.setCellValueFactory(new PropertyValueFactory<>("comments"));
+    commentsColumn.setCellFactory(tc -> {
+      TableCell<ReviewFileModel, String> cell = new TableCell<>();
+      Text text = new Text();
+      cell.setGraphic(text);
+      cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+      text.wrappingWidthProperty().bind(commentsColumn.widthProperty());
+      text.textProperty().bind(cell.itemProperty());
+      return cell;
+    });
+    reviewTableView.setOnMousePressed(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent event) {
+        if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+          loadReviewComment((ReviewFileModel) reviewTableView.getSelectionModel().getSelectedItem());
         }
-        videoDirectoryPath = selectedDirectory.toPath();
-        directoryPathText.setText(videoDirectoryPath.toString());
+      }
+    });
+    reviewTableView.getColumns().add(timestampColumn);
+    reviewTableView.getColumns().add(commentsColumn);
+    timestampColumn.setMaxWidth(1000);
+  }
+
+  @Override
+  public void chooseDirectory() {
+    DirectoryChooser directoryChooser = new DirectoryChooser();
+    File selectedDirectory = directoryChooser.showDialog(reviewPane.getScene().getWindow());
+    if (selectedDirectory == null) {
+      return;
+    }
+    videoDirectoryPath = selectedDirectory.toPath();
+    directoryPathText.setText(videoDirectoryPath.toString());
+    reviewTableView.getItems().clear();
+    scenarioListComboBox.getItems().clear();
+    File[] files = fileSystemService.getListOfFiles(videoDirectoryPath);
+    if (files.length == 0) {
+      new AlertController(Alert.AlertType.WARNING, NO_FILES_FOUND);
+    }
+    for (File file : files) {
+      scenarioListComboBox.getItems().add(new FileWrapper(file));
+    }
+  }
+
+  public void openDirectoryOnSystem() {
+    try {
+      Desktop desktop = Desktop.getDesktop();
+      desktop.open(videoDirectoryPath.toFile());
+    } catch (IOException e) {
+      new AlertController(Alert.AlertType.ERROR, e.getMessage());
+    } catch (NullPointerException e) {
+      new AlertController(Alert.AlertType.ERROR, "No folder selected yet");
+    }
+  }
+
+  public void setReviewForScenario() {
+    reviewTableView.getItems().clear();
+    setReviewDirectoryAndFile();
+    loadCsvObjectsInTable(FileSystemService.getReviewTextFilePath());
+    if (reviewTableView != null && scenarioListComboBox.getSelectionModel().getSelectedItem() != null) {
+      reviewTableView.getSortOrder().add(timestampColumn);
+      timestampColumn.setSortType(sortAscending);
+      timestampColumn.setSortable(true);
+      reviewTableView.sort();
+      eventPublisher
+          .publishEvent(new PlayMediaEvent(scenarioListComboBox.getSelectionModel().getSelectedItem().getFile()));
+    }
+
+  }
+
+  private void loadCsvObjectsInTable(Path filePath) {
+    try {
+      reviewFileModelList = fileSystemService.parseReviewFile(filePath);
+      if (reviewFileModelList == null) {
+        return;
+      }
+      reviewFileModelList.forEach(e -> reviewTableView.getItems().add(e));
+      reviewTableView.sort();
+    } catch (FileNotFoundException fileNotFoundException) {
+      reviewTableView.setPlaceholder(new Label("Review not yet started or not found"));
+    }
+  }
+
+  private void setReviewDirectoryAndFile() {
+    if (scenarioListComboBox.getSelectionModel().getSelectedItem() == null) {
+      return;
+    }
+    videoReviewFileName = scenarioListComboBox.getSelectionModel().getSelectedItem().toString();
+    FileSystemService.setReviewDirectoryPath(
+        Path.of(videoDirectoryPath.toString() + "\\" + FilenameUtils.removeExtension(videoReviewFileName)));
+    FileSystemService.setReviewTextFilePath(Path.of(FileSystemService.getReviewDirectoryPath().toString() + "\\"
+        + utils.getCsvFileNameFromOtherFileName(videoReviewFileName)));
+
+  }
+
+  public void deleteReviewComment() {
+    try {
+      reviewFileModelList = fileSystemService.parseReviewFile(FileSystemService.getReviewTextFilePath());
+      int reviewCommentSelectedIndex = reviewTableView.getSelectionModel().getSelectedIndex();
+      reviewFileModelList.remove(reviewCommentSelectedIndex);
+      fileSystemService.saveReviewFile(reviewFileModelList);
+      reviewTableView.getItems().clear();
+      loadCsvObjectsInTable(FileSystemService.getReviewTextFilePath());
+    } catch (FileNotFoundException fileNotFoundException) {
+      log.error("Could not find file", fileNotFoundException);
+      } catch (CsvRequiredFieldEmptyException | CsvDataTypeMismatchException | IOException e) {
+        new AlertController(Alert.AlertType.ERROR, "deleteReviewComment: " + e.getMessage());
+    } 
+  }
+
+  public void saveReviewComments(ActionEvent actionEvent) {
+    do {
+      try {
+        reviewFileModelList = fileSystemService.parseReviewFile(FileSystemService.getReviewTextFilePath());
+        reviewFileModelList
+            .add(new ReviewFileModel(MediaPlayerController.getCurrentPlayTime(), reviewCommentsTextArea.getText()));
+        fileSystemService.saveReviewFile(reviewFileModelList);
         reviewTableView.getItems().clear();
-        scenarioListComboBox.getItems().clear();
-        File[] files = fileSystemService.getListOfFiles(videoDirectoryPath);
-        if (files.length == 0) {
-            new AlertController(Alert.AlertType.WARNING, NO_FILES_FOUND);
-        }
-        for (File file : files) {
-            scenarioListComboBox.getItems().add(new FileWrapper(file));
-        }
-    }
-
-    public void openDirectoryOnSystem() {
-        try {
-            Desktop desktop = Desktop.getDesktop();
-            desktop.open(videoDirectoryPath.toFile());
-        } catch (IOException e) {
-            new AlertController(Alert.AlertType.ERROR, e.getMessage());
-        } catch (NullPointerException e) {
-            new AlertController(Alert.AlertType.ERROR, "No folder selected yet");
-        }
-    }
-
-    public void setReviewForScenario() {
-        reviewTableView.getItems().clear();
-        setReviewDirectoryAndFile();
         loadCsvObjectsInTable(FileSystemService.getReviewTextFilePath());
-        if (reviewTableView != null && scenarioListComboBox.getSelectionModel().getSelectedItem() != null) {
-            reviewTableView.getSortOrder().add(timestampColumn);
-            timestampColumn.setSortType(sortAscending);
-            timestampColumn.setSortable(true);
-            reviewTableView.sort();
-            eventPublisher.publishEvent(new PlayMediaEvent(scenarioListComboBox.getSelectionModel().getSelectedItem().getFile()));
-        }
+        eventPublisher.publishEvent(
+            new SaveSnapshotEvent(reviewCommentsTextArea.getText(), MediaPlayerController.getCurrentPlayTime()));
+      } catch (FileNotFoundException fileNotFoundException) {
+        fileSystemService.createReviewFile();
+        continue;
+      } catch (CsvRequiredFieldEmptyException | CsvDataTypeMismatchException | IOException e) {
+        new AlertController(Alert.AlertType.ERROR, "saveReviewComments: " + e.getMessage());
+      }
+      break;
+    } while (true);
+
+  }
+
+  private void loadReviewComment(ReviewFileModel reviewFileModel) {
+    String timestamp = reviewFileModel.getTimestamp();
+
+    int countOfColons = timestamp.length() - timestamp.replace(":", "").length();
+    if (countOfColons == 1) {
+      java.time.Duration durationTime = java.time.Duration.between(LocalTime.MIN,
+          LocalTime.parse("00:" + reviewFileModel.getTimestamp()));
+      Duration seekTime = new Duration(durationTime.toMillis());
+      mediaPlayerSeekToSeekTime(seekTime);
 
     }
-
-    private void loadCsvObjectsInTable(Path filePath) {
-        try {
-            reviewFileModelList = fileSystemService.parseReviewFile(filePath);
-            if (reviewFileModelList == null) {
-                return;
-            }
-            reviewFileModelList.forEach(e -> reviewTableView.getItems().add(e));
-            reviewTableView.sort();
-        } catch (FileNotFoundException fileNotFoundException) {
-            reviewTableView.setPlaceholder(new Label("Review not yet started or not found"));
-        }
+    if (countOfColons == 2) {
+      java.time.Duration durationTime = java.time.Duration.between(LocalTime.MIN,
+          LocalTime.parse(reviewFileModel.getTimestamp()));
+      Duration seekTime = new Duration(durationTime.toMillis());
+      mediaPlayerSeekToSeekTime(seekTime);
     }
 
-    private void setReviewDirectoryAndFile() {
-        if (scenarioListComboBox.getSelectionModel().getSelectedItem() == null) {
-            return;
-        }
-        videoReviewFileName = scenarioListComboBox.getSelectionModel().getSelectedItem().toString();
-        FileSystemService.setReviewDirectoryPath(Path.of(videoDirectoryPath.toString() + "\\" + FilenameUtils.removeExtension(videoReviewFileName)));
-        FileSystemService.setReviewTextFilePath(Path.of(FileSystemService.getReviewDirectoryPath().toString() + "\\" + utils.getCsvFileNameFromOtherFileName(videoReviewFileName)));
+  }
 
-    }
-
-    public void saveReviewComments(ActionEvent actionEvent) {
-        do {
-            try {
-                reviewFileModelList = fileSystemService.parseReviewFile(FileSystemService.getReviewTextFilePath());
-                reviewFileModelList.add(new ReviewFileModel(MediaPlayerController.getCurrentPlayTime(), reviewCommentsTextArea.getText()));
-                fileSystemService.saveReviewFile(reviewFileModelList);
-                reviewTableView.getItems().clear();
-                loadCsvObjectsInTable(FileSystemService.getReviewTextFilePath());
-                eventPublisher.publishEvent(new SaveSnapshotEvent(reviewCommentsTextArea.getText(), MediaPlayerController.getCurrentPlayTime()));
-            } catch (FileNotFoundException fileNotFoundException) {
-                fileSystemService.createReviewFile();
-                continue;
-            } catch (CsvRequiredFieldEmptyException | CsvDataTypeMismatchException | IOException e) {
-                new AlertController(Alert.AlertType.ERROR, "saveReviewComments: " + e.getMessage());
-            }
-            break;
-        } while (true);
-
-    }
-
-    private void loadReviewComment(ReviewFileModel reviewFileModel) {
-        String timestamp = reviewFileModel.getTimestamp();
-
-        int countOfColons = timestamp.length() - timestamp.replace(":", "").length();
-        if (countOfColons == 1) {
-            java.time.Duration durationTime = java.time.Duration.between(LocalTime.MIN, LocalTime.parse("00:" + reviewFileModel.getTimestamp()));
-            Duration seekTime = new Duration(durationTime.toMillis());
-            mediaPlayerSeekToSeekTime(seekTime);
-
-
-        }
-        if (countOfColons == 2) {
-            java.time.Duration durationTime = java.time.Duration.between(LocalTime.MIN, LocalTime.parse(reviewFileModel.getTimestamp()));
-            Duration seekTime = new Duration(durationTime.toMillis());
-            mediaPlayerSeekToSeekTime(seekTime);
-        }
-
-    }
-
-    private void mediaPlayerSeekToSeekTime(Duration seekTime) {
-        MediaPlayerController.seekToPlayTime(seekTime);
-    }
+  private void mediaPlayerSeekToSeekTime(Duration seekTime) {
+    MediaPlayerController.seekToPlayTime(seekTime);
+  }
 }

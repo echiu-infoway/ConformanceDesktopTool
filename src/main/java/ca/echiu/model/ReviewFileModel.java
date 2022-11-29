@@ -1,8 +1,6 @@
 package ca.echiu.model;
 
 import com.opencsv.bean.CsvBindByName;
-import com.opencsv.bean.CsvBindByPosition;
-import javafx.util.Duration;
 import lombok.*;
 
 
