@@ -24,8 +24,10 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.TimeZone;
 
 @Component
 @FxmlView("/fxml/Navigator.fxml")
@@ -86,10 +88,10 @@ public class NavigatorController implements DirectorySelectable {
         if(listViewOfFiles.getSelectionModel().isEmpty()){
             new AlertController(Alert.AlertType.WARNING, PLEASE_SELECT_A_FILE);
         }
-        LocalDateTime now = LocalDateTime.now();
-        String todayDate = now.format(DateTimeFormatter.ofPattern("MMM dd, yyyy"));
         File sourceFile = listViewOfFiles.getSelectionModel().getSelectedItem().getFile();
-        File destFile = new File(FileOrganizerController.getTargetDirectory()+ "\\" + saveNewFileEvent.getNewFileName() + " - " + todayDate + "." + FilenameUtils.getExtension(sourceFile.getName()));
+    LocalDateTime dateFileLastModified = LocalDateTime.ofInstant(Instant.ofEpochMilli(sourceFile.lastModified()), TimeZone.getDefault().toZoneId());
+        String formattedDateFileLastModified = dateFileLastModified.format(DateTimeFormatter.ofPattern("MMM dd, yyyy"));
+        File destFile = new File(FileOrganizerController.getTargetDirectory()+ "\\" + saveNewFileEvent.getNewFileName() + " - " + formattedDateFileLastModified + "." + FilenameUtils.getExtension(sourceFile.getName()));
         fileSystemService.copyToNewFile(sourceFile, destFile);
         publisher.publishEvent(new RefreshFileListEvent());
 
