@@ -1,10 +1,8 @@
 package ca.echiu.controller;
 
-import ca.echiu.service.FileSystemService;
 import ca.echiu.service.WeatherService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.StackPane;
@@ -31,9 +29,6 @@ public class MainWindowController {
     private ToggleButton reviewToggleButton;
     @Autowired
     private WeatherService weatherService;
-    @Autowired
-    private FileSystemService fileSystemService;
-    private FXMLLoader fxmlLoader = new FXMLLoader();
 
 
     public void loadWeatherForecast(ActionEvent actionEvent) {
