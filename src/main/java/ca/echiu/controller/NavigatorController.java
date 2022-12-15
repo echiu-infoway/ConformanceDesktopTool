@@ -5,6 +5,8 @@ import ca.echiu.event.RefreshFileListEvent;
 import ca.echiu.event.SaveNewFileEvent;
 import ca.echiu.service.FileSystemService;
 import ca.echiu.wrapper.FileWrapper;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -93,6 +95,8 @@ public class NavigatorController implements DirectorySelectable {
         String formattedDateFileLastModified = dateFileLastModified.format(DateTimeFormatter.ofPattern("MMM dd, yyyy"));
         File destFile = new File(FileOrganizerController.getTargetDirectory()+ "\\" + saveNewFileEvent.getNewFileName() + " - " + formattedDateFileLastModified + "." + FilenameUtils.getExtension(sourceFile.getName()));
         fileSystemService.copyToNewFile(sourceFile, destFile);
+        listViewOfFiles.getSelectionModel().getSelectedItem().setName("SAVED");
+        listViewOfFiles.refresh();
         publisher.publishEvent(new RefreshFileListEvent());
 
     }
