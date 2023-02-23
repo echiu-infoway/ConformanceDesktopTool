@@ -46,6 +46,7 @@
                 <children>
                     <Button onAction="#loadWeatherForecast">Get weather!</Button>
                     <ToggleButton fx:id="reviewToggleButton" onAction="#toggleFileOrganizerVbox">REVIEW MODE</ToggleButton>
+                    <Label fx:id="videoTitle"/>
                 </children>
             </HBox>
             <fx:include source="MediaPlayer.fxml"/>

@@ -1,5 +1,6 @@
 package ca.echiu.controller;
 
+import ca.echiu.event.PlayMediaEvent;
 import ca.echiu.service.WeatherService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -8,7 +9,9 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import net.rgielen.fxweaver.core.FxmlView;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -27,6 +30,8 @@ public class MainWindowController {
     private VBox fileOrganizerVbox;
     @FXML
     private ToggleButton reviewToggleButton;
+    @FXML
+    private Label videoTitle;
     @Autowired
     private WeatherService weatherService;
 
@@ -53,5 +58,9 @@ public class MainWindowController {
 
         }
 
+    }
+    @EventListener
+    public void updateVideoTitle(PlayMediaEvent event){
+        videoTitle.setText(FilenameUtils.removeExtension(event.getFile().getName()));
     }
 }
